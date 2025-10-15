@@ -1,66 +1,66 @@
 'use client';
 
+import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Heart, Bell, ArrowLeft, User, Stethoscope, Target, Apple, Flower, Palette } from 'lucide-react';
+import { Heart, Bell, ArrowLeft, User, Stethoscope, Target, Apple, Flower, Palette, Brain } from 'lucide-react';
+import ProfessionalList from './professional-list';
 
 interface ProfessionalCareProps {
   onNavigate?: (tab: string) => void;
 }
 
-const careOptions = [
-  {
-    id: 'psychologist',
-    title: 'Psychologist',
-    description: 'Therapy and counseling to navigate emotional challenges, improve coping mechanisms, and enhance well-being.',
-    icon: User,
-  },
-  {
-    id: 'psychiatrist',
-    title: 'Psychiatrist',
-    description: 'Medical doctors who diagnose, treat, and prescribe medication for mental health conditions.',
-    icon: Stethoscope,
-  },
-  {
-    id: 'life-coaching',
-    title: 'Life Coaching',
-    description: 'Guidance and support to help you set and achieve personal and professional goals.',
-    icon: Target,
-  },
-  {
-    id: 'nutrition',
-    title: 'Nutrition',
-    description: 'Guidance on healthy eating habits to support your mental and physical well-being.',
-    icon: Apple,
-  },
-  {
-    id: 'yoga',
-    title: 'Yoga',
-    description: 'Combines physical postures, breathing, and meditation to reduce stress and improve clarity.',
-    icon: Flower,
-  },
-  {
-    id: 'art-therapy',
-    title: 'Art Therapy',
-    description: 'Using creative processes to express emotions, gain self-awareness, and improve mental health.',
-    icon: Palette,
-  },
-];
-
 export default function ProfessionalCare({ onNavigate }: ProfessionalCareProps) {
-  const handleExplore = (careType: string, careId: string) => {
-    if (careId === 'yoga') {
-      // Navigate to yoga studio page
-      onNavigate?.('yoga-studio');
-    } else if (careId === 'art-therapy') {
-      // Navigate to art therapy page
-      onNavigate?.('art-therapy');
-    } else {
-      // In a real app, this would navigate to other detailed pages
-      console.log(`Exploring ${careType} options`);
-      alert(`Exploring ${careType} options. This would typically open a detailed page with available professionals.`);
-    }
-  };
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+
+  const categories = [
+    {
+      id: 'Psychologist',
+      title: 'Psychologist',
+      description: 'Licensed psychologists for therapy and counseling',
+      icon: Brain,
+      color: 'from-blue-500 to-blue-600',
+    },
+    {
+      id: 'Psychiatrist',
+      title: 'Psychiatrist',
+      description: 'Medical doctors specializing in mental health',
+      icon: Stethoscope,
+      color: 'from-purple-500 to-purple-600',
+    },
+    {
+      id: 'Life Coaching',
+      title: 'Life Coaching',
+      description: 'Professional coaches for personal development',
+      icon: Target,
+      color: 'from-green-500 to-green-600',
+    },
+    {
+      id: 'Nutrition',
+      title: 'Nutrition',
+      description: 'Nutritionists and wellness experts',
+      icon: Apple,
+      color: 'from-orange-500 to-orange-600',
+    },
+    {
+      id: 'Yoga',
+      title: 'Yoga Therapy',
+      description: 'Certified yoga instructors for mindfulness and wellness',
+      icon: Flower,
+      color: 'from-pink-500 to-pink-600',
+    },
+    {
+      id: 'Art Therapy',
+      title: 'Art Therapy',
+      description: 'Creative expression therapy for emotional healing',
+      icon: Palette,
+      color: 'from-indigo-500 to-indigo-600',
+    },
+  ];
+
+  if (selectedCategory) {
+    return <ProfessionalList category={selectedCategory} onBack={() => setSelectedCategory(null)} />;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-900 dark:to-slate-800">
@@ -114,7 +114,7 @@ export default function ProfessionalCare({ onNavigate }: ProfessionalCareProps) 
 
       {/* Main Content */}
       <main className="flex-grow container mx-auto px-6 py-8 md:py-16">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-6xl mx-auto">
           {/* Header Section */}
           <div className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-800 dark:text-white tracking-tight">
@@ -127,7 +127,7 @@ export default function ProfessionalCare({ onNavigate }: ProfessionalCareProps) 
 
           {/* Care Options Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {careOptions.map((option) => {
+            {categories.map((option) => {
               const Icon = option.icon;
               return (
                 <Card 
@@ -136,10 +136,10 @@ export default function ProfessionalCare({ onNavigate }: ProfessionalCareProps) 
                 >
                   <CardContent className="p-6 flex flex-col h-full">
                     <div className="flex items-center gap-3 mb-4">
-                      <div className="w-10 h-10 bg-primary/20 rounded-lg flex items-center justify-center">
-                        <Icon className="h-6 w-6 text-primary" />
+                      <div className={`w-12 h-12 bg-gradient-to-br ${option.color} rounded-lg flex items-center justify-center`}>
+                        <Icon className="h-6 w-6 text-white" />
                       </div>
-                      <h3 className="text-2xl font-bold text-gray-800 dark:text-white">
+                      <h3 className="text-xl font-bold text-gray-800 dark:text-white">
                         {option.title}
                       </h3>
                     </div>
@@ -149,14 +149,10 @@ export default function ProfessionalCare({ onNavigate }: ProfessionalCareProps) 
                     </p>
                     
                     <Button
-                      onClick={() => handleExplore(option.title, option.id)}
+                      onClick={() => setSelectedCategory(option.id)}
                       className="w-full bg-primary text-white font-bold py-3 px-4 rounded-lg hover:bg-primary/90 transition-all duration-300 shadow-md"
                     >
-                      Explore {option.title === 'Life Coaching' ? 'Life Coaches' : 
-                              option.title === 'Nutrition' ? 'Nutritionists' :
-                              option.title === 'Yoga' ? 'Yoga Studios' :
-                              option.title === 'Art Therapy' ? 'Art Therapy' :
-                              option.title + 's'}
+                      Explore Professionals
                     </Button>
                   </CardContent>
                 </Card>

@@ -165,6 +165,87 @@ export type Database = {
         }
         Relationships: []
       }
+      care_chat_messages: {
+        Row: {
+          channel_id: string
+          created_at: string | null
+          id: string
+          message: string
+          sender_id: string
+        }
+        Insert: {
+          channel_id: string
+          created_at?: string | null
+          id?: string
+          message: string
+          sender_id: string
+        }
+        Update: {
+          channel_id?: string
+          created_at?: string | null
+          id?: string
+          message?: string
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "care_chat_messages_channel_id_fkey"
+            columns: ["channel_id"]
+            isOneToOne: false
+            referencedRelation: "chat_channels"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "care_chat_messages_sender_id_fkey"
+            columns: ["sender_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      chat_channels: {
+        Row: {
+          created_at: string | null
+          id: string
+          professional_id: string
+          status: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          professional_id: string
+          status?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          professional_id?: string
+          status?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_channels_professional_id_fkey"
+            columns: ["professional_id"]
+            isOneToOne: false
+            referencedRelation: "professionals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "chat_channels_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       chat_history: {
         Row: {
           created_at: string | null
@@ -473,39 +554,42 @@ export type Database = {
       professionals: {
         Row: {
           bio: string | null
+          category: string | null
           category_id: string | null
           contact_email: string | null
           created_at: string | null
           id: string
-          name: string
           photo_url: string | null
           rating: number | null
           specialization: string | null
           title: string | null
+          user_id: string | null
         }
         Insert: {
           bio?: string | null
+          category?: string | null
           category_id?: string | null
           contact_email?: string | null
           created_at?: string | null
           id?: string
-          name: string
           photo_url?: string | null
           rating?: number | null
           specialization?: string | null
           title?: string | null
+          user_id?: string | null
         }
         Update: {
           bio?: string | null
+          category?: string | null
           category_id?: string | null
           contact_email?: string | null
           created_at?: string | null
           id?: string
-          name?: string
           photo_url?: string | null
           rating?: number | null
           specialization?: string | null
           title?: string | null
+          user_id?: string | null
         }
         Relationships: [
           {
@@ -513,6 +597,13 @@ export type Database = {
             columns: ["category_id"]
             isOneToOne: false
             referencedRelation: "care_category"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "professionals_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
             referencedColumns: ["id"]
           },
         ]
@@ -672,6 +763,7 @@ export type Database = {
           email: string
           full_name: string | null
           id: string
+          role: string
           updated_at: string | null
         }
         Insert: {
@@ -681,6 +773,7 @@ export type Database = {
           email: string
           full_name?: string | null
           id?: string
+          role?: string
           updated_at?: string | null
         }
         Update: {
@@ -690,6 +783,7 @@ export type Database = {
           email?: string
           full_name?: string | null
           id?: string
+          role?: string
           updated_at?: string | null
         }
         Relationships: []

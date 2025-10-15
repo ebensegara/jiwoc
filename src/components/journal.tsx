@@ -193,16 +193,6 @@ export default function Journal() {
     }
   };
 
-  const getMoodBadgeColor = (moodValue: number) => {
-    const mood = moodOptions.find(m => m.value === moodValue);
-    return mood?.color || 'bg-gray-100 text-gray-800';
-  };
-
-  const getMoodEmoji = (moodValue: number) => {
-    const mood = moodOptions.find(m => m.value === moodValue);
-    return mood?.emoji || '😐';
-  };
-
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -255,13 +245,7 @@ export default function Journal() {
                     <div className="flex items-center space-x-4 text-sm text-muted-foreground">
                       <div className="flex items-center space-x-1">
                         <Calendar className="h-4 w-4" />
-                        <span>{entry.created_at}</span>
-                      </div>
-                      <div className="flex items-center space-x-1">
-                        <span>{getMoodEmoji(entry.moodValue)}</span>
-                        <Badge className={getMoodBadgeColor(entry.moodValue)}>
-                          {entry.mood}
-                        </Badge>
+                        <span>{new Date(entry.created_at).toLocaleDateString()}</span>
                       </div>
                     </div>
                   </div>
@@ -273,13 +257,30 @@ export default function Journal() {
                     >
                       <Edit className="h-4 w-4" />
                     </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => handleDeleteEntry(entry.id)}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Delete Entry?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            This action cannot be undone. This will permanently delete your journal entry.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction onClick={() => handleDeleteEntry(entry.id)}>
+                            Delete
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
                   </div>
                 </div>
               </CardHeader>
@@ -287,7 +288,7 @@ export default function Journal() {
                 <p className="text-sm text-muted-foreground mb-3 line-clamp-3">
                   {entry.content}
                 </p>
-                {entry.tags.length > 0 && (
+                {entry.tags && entry.tags.length > 0 && (
                   <div className="flex flex-wrap gap-1">
                     {entry.tags.map((tag, index) => (
                       <Badge key={index} variant="secondary" className="text-xs">

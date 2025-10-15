@@ -101,14 +101,14 @@ export default function LandingPage() {
                 className="inline-flex items-center px-8 py-3 text-white bg-gradient-to-r from-[#756657] to-[#756657]/90 rounded-full hover:from-[#756657]/90 hover:to-[#756657]/80 transition-all duration-300 font-semibold"
               >
                 <Brain className="w-5 h-5 mr-2" />
-                Mulai Terapi AI Gratis
+                Sign In
                 <ArrowUpRight className="w-4 h-4 ml-2" />
               </Link>
               <Link
-                href="/auth"
+                href="/auth/signup"
                 className="inline-flex items-center px-6 py-3 text-[#756657] hover:text-[#756657]/80 transition-colors font-semibold"
               >
-                Coba AI Terapis Gratis
+                Sign Up (Test)
               </Link>
             </div>
           </div>
