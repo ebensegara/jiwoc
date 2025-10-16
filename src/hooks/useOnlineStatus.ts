@@ -1,49 +1,23 @@
-"use client";
-import { useEffect } from "react";
-import { supabase } from "@/lib/supabase";
+import { useState, useEffect } from 'react';
 
-export function useOnlineStatus(professionalId: string) {
+export function useOnlineStatus() {
+  const [isOnline, setIsOnline] = useState(true);
+
   useEffect(() => {
-    if (!professionalId) return;
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
 
-    let timeoutId: NodeJS.Timeout;
+    // Set initial status
+    setIsOnline(navigator.onLine);
 
-    const markOnline = async () => {
-      try {
-        await supabase
-          .from("professionals")
-          .update({ is_available: true })
-          .eq("id", professionalId);
-      } catch (error) {
-        console.error("Failed to mark online:", error);
-      }
-    };
-
-    const markOffline = async () => {
-      try {
-        await supabase
-          .from("professionals")
-          .update({ is_available: false })
-          .eq("id", professionalId);
-      } catch (error) {
-        console.error("Failed to mark offline:", error);
-      }
-    };
-
-    // Debounced mark online
-    timeoutId = setTimeout(markOnline, 500);
-
-    // Handle page unload
-    const handleBeforeUnload = () => {
-      markOffline();
-    };
-
-    window.addEventListener("beforeunload", handleBeforeUnload);
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
 
     return () => {
-      clearTimeout(timeoutId);
-      markOffline();
-      window.removeEventListener("beforeunload", handleBeforeUnload);
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
     };
-  }, [professionalId]);
+  }, []);
+
+  return isOnline;
 }

@@ -37,7 +37,7 @@ export default function DashboardPage() {
         router.push("/dashboard/user");
       }
     } catch (error) {
-      console.error("Error checking role:", error);
+      // Fallback to user dashboard on error
       router.push("/dashboard/user");
     } finally {
       setIsLoading(false);

@@ -46,8 +46,7 @@ export default function UserDashboard() {
           schema: "public",
           table: "professionals",
         },
-        (payload) => {
-          console.log("Professional status changed:", payload);
+        () => {
           fetchProfessionals();
         }
       )
@@ -72,7 +71,6 @@ export default function UserDashboard() {
 
       if (error) throw error;
       
-      console.log("Fetched professionals:", data);
       setProfessionals(data || []);
     } catch (error: any) {
       toast({

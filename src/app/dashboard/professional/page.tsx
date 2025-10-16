@@ -110,16 +110,12 @@ export default function ProfessionalDashboard() {
         return;
       }
 
-      console.log("Current user ID:", user.id);
-
       // Fetch professional profile
       const { data: profData, error: profError } = await supabase
         .from("professionals")
         .select("*")
         .eq("user_id", user.id)
         .single();
-
-      console.log("Professional data:", profData, "Error:", profError);
 
       if (profError) {
         toast({
@@ -139,7 +135,6 @@ export default function ProfessionalDashboard() {
 
       await fetchChannels(profData.id);
     } catch (error: any) {
-      console.error("Dashboard init error:", error);
       toast({
         title: "Error",
         description: error.message || "Failed to load dashboard",
@@ -155,8 +150,6 @@ export default function ProfessionalDashboard() {
     if (!profId) return;
 
     try {
-      console.log("Fetching channels for professional:", profId);
-      
       const { data, error } = await supabase
         .from("chat_channels")
         .select(`
@@ -170,8 +163,6 @@ export default function ProfessionalDashboard() {
         `)
         .eq("professional_id", profId)
         .order("created_at", { ascending: false });
-
-      console.log("Channels data:", data, "Error:", error);
 
       if (error) throw error;
 
@@ -187,7 +178,7 @@ export default function ProfessionalDashboard() {
 
       setChannels(formattedChannels);
     } catch (error: any) {
-      console.error("Failed to fetch channels:", error);
+      // Silent fail for channel fetch
     }
   };
 

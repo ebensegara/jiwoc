@@ -41,7 +41,7 @@ export default function AuthPage() {
 
           if (!existingUser) {
             // Create user profile if it doesn't exist
-            const { error: profileError } = await supabase
+            await supabase
               .from("users")
               .insert([
                 {
@@ -50,10 +50,6 @@ export default function AuthPage() {
                   full_name: data.user.user_metadata?.full_name || "",
                 },
               ]);
-
-            if (profileError) {
-              console.error("Profile creation error:", profileError);
-            }
           }
         }
 
@@ -80,7 +76,7 @@ export default function AuthPage() {
 
         // Create user profile immediately
         if (data.user) {
-          const { error: profileError } = await supabase
+          await supabase
             .from("users")
             .insert([
               {
@@ -89,10 +85,6 @@ export default function AuthPage() {
                 full_name: fullName,
               },
             ]);
-
-          if (profileError) {
-            console.error("Profile creation error:", profileError);
-          }
         }
 
         toast({

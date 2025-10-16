@@ -126,8 +126,6 @@ export default function AIChat() {
 
       // Call Supabase Edge Function proxy to avoid CORS
       try {
-        console.log("Calling n8n via Supabase proxy...");
-
         const { data, error } = await supabase.functions.invoke(
           "supabase-functions-n8n-webhook-proxy",
           {
@@ -140,8 +138,6 @@ export default function AIChat() {
         );
 
         if (error) throw error;
-
-        console.log("n8n response:", data);
 
         // Extract AI response from webhook - check multiple possible fields including 'output'
         const aiResponse =
@@ -161,11 +157,7 @@ export default function AIChat() {
         ]);
 
         if (aiError) throw aiError;
-
-        console.log("Message saved successfully");
       } catch (webhookError: any) {
-        console.error("Webhook error:", webhookError);
-
         // Fallback to local response if webhook fails
         const fallbackResponse =
           "I'm here to listen and support you. Could you tell me more about what's on your mind?";

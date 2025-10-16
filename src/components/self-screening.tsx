@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/button';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Heart, Bell, ArrowLeft } from 'lucide-react';
+import { supabase } from '@/lib/supabase';
+import { useToast } from '@/components/ui/use-toast';
 
 interface SelfScreeningProps {
   onNavigate?: (tab: string) => void;
@@ -47,25 +49,49 @@ const options = [
 ];
 
 export default function SelfScreening({ onNavigate }: SelfScreeningProps) {
+  const { toast } = useToast();
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [score, setScore] = useState<number | null>(null);
+  const [showResults, setShowResults] = useState(false);
 
   const handleAnswerChange = (questionId: string, value: string) => {
     setAnswers(prev => ({ ...prev, [questionId]: value }));
   };
 
-  const handleSubmit = () => {
-    // Calculate total score
-    const totalScore = Object.values(answers).reduce((sum, value) => sum + parseInt(value || '0'), 0);
-    
-    console.log('Assessment submitted:', { answers, totalScore });
-    setIsSubmitted(true);
-    
-    // Reset after showing confirmation
-    setTimeout(() => {
-      setIsSubmitted(false);
-      setAnswers({});
-    }, 3000);
+  const handleSubmit = async () => {
+    try {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) throw new Error("Not authenticated");
+
+      const totalScore = Object.values(answers).reduce((a, b) => a + b, 0);
+
+      const { error } = await supabase.from("screening_results").insert([
+        {
+          user_id: user.id,
+          score: totalScore,
+          answers: answers,
+        },
+      ]);
+
+      if (error) throw error;
+
+      setScore(totalScore);
+      setShowResults(true);
+
+      toast({
+        title: "Assessment Complete",
+        description: "Your results have been saved.",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to save results",
+        variant: "destructive",
+      });
+    }
   };
 
   const getScoreInterpretation = () => {

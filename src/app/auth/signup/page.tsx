@@ -56,7 +56,6 @@ export default function SignupPage() {
           );
 
         if (profileError) {
-          console.error("Profile creation error:", profileError);
           throw profileError; // Stop if profile creation fails
         }
 
@@ -78,7 +77,6 @@ export default function SignupPage() {
             );
 
           if (professionalError) {
-            console.error("Professional profile creation error:", professionalError);
             throw professionalError; // Stop if professional profile creation fails
           }
         }

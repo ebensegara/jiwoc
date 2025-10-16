@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Heart, Bell, ArrowLeft, TrendingUp, TrendingDown, Share2, Download, Calendar } from 'lucide-react';
+import { supabase } from '@/lib/supabase';
 
 interface WeeklyInsightsProps {
   onNavigate?: (tab: string) => void;
@@ -36,39 +37,41 @@ const mockWeeklyData: MoodData[] = [
   { day: 'Sun', mood: 2.9, activity: 2.0 },
 ];
 
-export default function WeeklyInsights({ onNavigate }: WeeklyInsightsProps) {
+export default function WeeklyInsights() {
   const [insights, setInsights] = useState<InsightData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [moodData, setMoodData] = useState<MoodData[]>([]);
 
   useEffect(() => {
-    // Simulate data fetching
-    const fetchInsights = async () => {
-      setIsLoading(true);
-      
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Calculate insights from mock data
-      const moodAverage = mockWeeklyData.reduce((sum, day) => sum + day.mood, 0) / mockWeeklyData.length;
-      const activityAverage = mockWeeklyData.reduce((sum, day) => sum + day.activity, 0) / mockWeeklyData.length;
-      
-      const mockInsights: InsightData = {
-        moodAverage: Number(moodAverage.toFixed(1)),
-        moodTrend: 12, // +12%
-        activityAverage: Number(activityAverage.toFixed(1)),
-        activityTrend: -8, // -8%
-        weeklyData: mockWeeklyData,
-        keyObservations: "This week, your mood has shown a general upward trend, with an average rating of 6.8. However, your activity levels have decreased slightly, averaging 4.2. This suggests a potential correlation between increased mood and reduced physical activity. Consider incorporating more movement into your routine to maintain a balanced well-being.",
-        journalInsights: "Your journal entries frequently mention feelings of accomplishment and gratitude, particularly on days with higher mood ratings. Common themes include successful project completion at work and expressing appreciation for personal relationships. Conversely, entries on lower mood days often reflect challenges with time management and feelings of isolation.",
-        screeningResults: "Your recent self-screening indicates a moderate level of stress, with a score of 6 out of 10. This aligns with the observed fluctuations in your mood and activity levels. Consider exploring stress-reduction techniques, such as mindfulness exercises or engaging in hobbies you enjoy."
-      };
-      
-      setInsights(mockInsights);
-      setIsLoading(false);
-    };
-
-    fetchInsights();
+    fetchWeeklyData();
   }, []);
+
+  const fetchWeeklyData = async () => {
+    try {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const oneWeekAgo = new Date();
+      oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
+      const { data, error } = await supabase
+        .from("mood_entries")
+        .select("*")
+        .eq("user_id", user.id)
+        .gte("created_at", oneWeekAgo.toISOString())
+        .order("created_at", { ascending: true });
+
+      if (error) throw error;
+
+      setMoodData(data || []);
+    } catch (error: any) {
+      // Silent fail for insights
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleShare = async () => {
     if (navigator.share) {
