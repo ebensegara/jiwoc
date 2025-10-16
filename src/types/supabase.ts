@@ -559,6 +559,7 @@ export type Database = {
           contact_email: string | null
           created_at: string | null
           id: string
+          is_available: boolean | null
           photo_url: string | null
           rating: number | null
           specialization: string | null
@@ -572,6 +573,7 @@ export type Database = {
           contact_email?: string | null
           created_at?: string | null
           id?: string
+          is_available?: boolean | null
           photo_url?: string | null
           rating?: number | null
           specialization?: string | null
@@ -585,6 +587,7 @@ export type Database = {
           contact_email?: string | null
           created_at?: string | null
           id?: string
+          is_available?: boolean | null
           photo_url?: string | null
           rating?: number | null
           specialization?: string | null

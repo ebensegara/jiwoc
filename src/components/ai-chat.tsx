@@ -10,6 +10,8 @@ import { Send, Bot, User, Heart } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useToast } from '@/components/ui/use-toast';
 
+const N8N_WEBHOOK_URL = 'https://dindon.app.n8n.cloud/webhook/6f49e2fe-d2ff-427b-8e79-6628403ebb73';
+
 interface Message {
   id: string;
   content: string;
@@ -109,12 +111,14 @@ export default function AIChat() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
 
+      const userMessage = inputValue;
+
       // Save user message
       const { error: userError } = await supabase
         .from('chat_messages')
         .insert([{
           user_id: user.id,
-          content: inputValue,
+          content: userMessage,
           sender: 'user',
         }]);
 
@@ -123,21 +127,65 @@ export default function AIChat() {
       setInputValue('');
       setIsTyping(true);
 
-      // Simulate AI response delay
-      setTimeout(async () => {
-        const randomResponse = aiResponses[Math.floor(Math.random() * aiResponses.length)];
+      // Send request to n8n webhook with POST method and JSON body
+      try {
+        const response = await fetch(N8N_WEBHOOK_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            message: userMessage,
+            userId: user.id,
+            timestamp: new Date().toISOString(),
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error(`Webhook request failed: ${response.status}`);
+        }
+
+        const data = await response.json();
+        
+        // Extract AI response from webhook
+        const aiResponse = data.response || data.message || data.advice || 
+                          'Thank you for sharing. I\'m here to support you on your mental health journey.';
+
+        // Save AI response to database
+        const { error: aiError } = await supabase
+          .from('chat_messages')
+          .insert([{
+            user_id: user.id,
+            content: aiResponse,
+            sender: 'ai',
+          }]);
+
+        if (aiError) throw aiError;
+
+      } catch (webhookError: any) {
+        console.error('Webhook error:', webhookError);
+        
+        // Fallback to local response if webhook fails
+        const fallbackResponse = "I'm here to listen and support you. Could you tell me more about what's on your mind?";
         
         const { error: aiError } = await supabase
           .from('chat_messages')
           .insert([{
             user_id: user.id,
-            content: randomResponse,
+            content: fallbackResponse,
             sender: 'ai',
           }]);
 
         if (aiError) throw aiError;
-        setIsTyping(false);
-      }, 1500);
+
+        toast({
+          title: 'Connection Issue',
+          description: 'Using offline mode. Your messages are still saved.',
+          variant: 'default',
+        });
+      }
+
+      setIsTyping(false);
     } catch (error: any) {
       toast({
         title: 'Error',
