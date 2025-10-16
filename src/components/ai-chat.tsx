@@ -6,11 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Send, Bot, User, Heart } from "lucide-react";
+import { Send, Bot, User } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/components/ui/use-toast";
-
-const N8N_WEBHOOK_URL = 'https://dindon.app.n8n.cloud/webhook-test/jiwohook';
 
 interface Message {
   id: string;
@@ -18,15 +16,6 @@ interface Message {
   sender: "user" | "ai";
   created_at: string;
 }
-
-const aiResponses = [
-  "I hear you, and I want you to know that your feelings are valid. Can you tell me more about what's been on your mind?",
-  "It sounds like you're going through a challenging time. Remember that it's okay to feel this way, and you're not alone.",
-  "That's wonderful to hear! It's great that you're taking time to check in with yourself. What's been contributing to these positive feelings?",
-  "Thank you for sharing that with me. Sometimes just talking about our experiences can be really helpful. How does it feel to express these thoughts?",
-  "I appreciate your openness. Taking care of your mental health is so important. Have you tried any relaxation techniques that help you feel better?",
-  "It's completely normal to have ups and downs. What usually helps you when you're feeling this way?",
-];
 
 export default function AIChat() {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -114,87 +103,96 @@ export default function AIChat() {
     if (!inputValue.trim()) return;
 
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('Not authenticated');
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) throw new Error("Not authenticated");
 
       const userMessage = inputValue;
 
       // Save user message
-      const { error: userError } = await supabase
-        .from('chat_messages')
-        .insert([{
+      const { error: userError } = await supabase.from("chat_messages").insert([
+        {
           user_id: user.id,
           content: userMessage,
-          sender: 'user',
-        }]);
+          sender: "user",
+        },
+      ]);
 
       if (userError) throw userError;
 
-      setInputValue('');
+      setInputValue("");
       setIsTyping(true);
 
       // Call Supabase Edge Function proxy to avoid CORS
       try {
-        console.log('Calling n8n via Supabase proxy...');
+        console.log("Calling n8n via Supabase proxy...");
 
-        const { data, error } = await supabase.functions.invoke('supabase-functions-n8n-webhook-proxy', {
-          body: {
-            message: userMessage,
-            userId: user.id,
-            timestamp: new Date().toISOString(),
+        const { data, error } = await supabase.functions.invoke(
+          "supabase-functions-n8n-webhook-proxy",
+          {
+            body: {
+              message: userMessage,
+              userId: user.id,
+              timestamp: new Date().toISOString(),
+            },
           },
-        });
+        );
 
         if (error) throw error;
 
-        console.log('n8n response:', data);
+        console.log("n8n response:", data);
 
         // Extract AI response from webhook - check multiple possible fields including 'output'
-        const aiResponse = data.output || data.response || data.message || data.advice || 
-                          'Thank you for sharing. I\'m here to support you on your mental health journey.';
+        const aiResponse =
+          data.output ||
+          data.response ||
+          data.message ||
+          data.advice ||
+          "Thank you for sharing. I'm here to support you on your mental health journey.";
 
         // Save AI response to database
-        const { error: aiError } = await supabase
-          .from('chat_messages')
-          .insert([{
+        const { error: aiError } = await supabase.from("chat_messages").insert([
+          {
             user_id: user.id,
             content: aiResponse,
-            sender: 'ai',
-          }]);
+            sender: "ai",
+          },
+        ]);
 
         if (aiError) throw aiError;
 
-        console.log('Message saved successfully');
-
+        console.log("Message saved successfully");
       } catch (webhookError: any) {
-        console.error('Webhook error:', webhookError);
-        
+        console.error("Webhook error:", webhookError);
+
         // Fallback to local response if webhook fails
-        const fallbackResponse = "I'm here to listen and support you. Could you tell me more about what's on your mind?";
-        
-        const { error: aiError } = await supabase
-          .from('chat_messages')
-          .insert([{
+        const fallbackResponse =
+          "I'm here to listen and support you. Could you tell me more about what's on your mind?";
+
+        const { error: aiError } = await supabase.from("chat_messages").insert([
+          {
             user_id: user.id,
             content: fallbackResponse,
-            sender: 'ai',
-          }]);
+            sender: "ai",
+          },
+        ]);
 
         if (aiError) throw aiError;
 
         toast({
-          title: 'Connection Issue',
-          description: 'Using offline mode. Your messages are still saved.',
-          variant: 'default',
+          title: "Connection Issue",
+          description: "Using offline mode. Your messages are still saved.",
+          variant: "default",
         });
       }
 
       setIsTyping(false);
     } catch (error: any) {
       toast({
-        title: 'Error',
-        description: error.message || 'Failed to send message',
-        variant: 'destructive',
+        title: "Error",
+        description: error.message || "Failed to send message",
+        variant: "destructive",
       });
       setIsTyping(false);
     }
