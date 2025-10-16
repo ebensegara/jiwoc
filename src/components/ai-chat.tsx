@@ -1,21 +1,21 @@
-'use client';
+"use client";
 
-import { useState, useRef, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Send, Bot, User, Heart } from 'lucide-react';
-import { supabase } from '@/lib/supabase';
-import { useToast } from '@/components/ui/use-toast';
+import { useState, useRef, useEffect } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Send, Bot, User, Heart } from "lucide-react";
+import { supabase } from "@/lib/supabase";
+import { useToast } from "@/components/ui/use-toast";
 
-const N8N_WEBHOOK_URL = 'https://dindon.app.n8n.cloud/webhook/6f49e2fe-d2ff-427b-8e79-6628403ebb73';
+const N8N_WEBHOOK_URL = 'https://dindon.app.n8n.cloud/webhook-test/jiwohook';
 
 interface Message {
   id: string;
   content: string;
-  sender: 'user' | 'ai';
+  sender: "user" | "ai";
   created_at: string;
 }
 
@@ -30,7 +30,7 @@ const aiResponses = [
 
 export default function AIChat() {
   const [messages, setMessages] = useState<Message[]>([]);
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
@@ -38,15 +38,16 @@ export default function AIChat() {
 
   useEffect(() => {
     fetchMessages();
-    
+
     // Subscribe to realtime changes
     const channel = supabase
-      .channel('chat_messages_changes')
-      .on('postgres_changes', 
-        { event: 'INSERT', schema: 'public', table: 'chat_messages' },
+      .channel("chat_messages_changes")
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "chat_messages" },
         () => {
           fetchMessages();
-        }
+        },
       )
       .subscribe();
 
@@ -57,23 +58,26 @@ export default function AIChat() {
 
   const fetchMessages = async () => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (!user) return;
 
       const { data, error } = await supabase
-        .from('chat_messages')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: true });
+        .from("chat_messages")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: true });
 
       if (error) throw error;
 
       if (!data || data.length === 0) {
         // Add welcome message if no messages exist
         const welcomeMessage = {
-          id: 'welcome',
-          content: "Hello! I'm your wellness companion. I'm here to listen and support you on your mental health journey. How are you feeling today?",
-          sender: 'ai' as const,
+          id: "welcome",
+          content:
+            "Hello! I'm your wellness companion. I'm here to listen and support you on your mental health journey. How are you feeling today?",
+          sender: "ai" as const,
           created_at: new Date().toISOString(),
         };
         setMessages([welcomeMessage]);
@@ -82,9 +86,9 @@ export default function AIChat() {
       }
     } catch (error: any) {
       toast({
-        title: 'Error',
-        description: error.message || 'Failed to fetch messages',
-        variant: 'destructive',
+        title: "Error",
+        description: error.message || "Failed to fetch messages",
+        variant: "destructive",
       });
     } finally {
       setIsLoading(false);
@@ -93,7 +97,9 @@ export default function AIChat() {
 
   const scrollToBottom = () => {
     if (scrollAreaRef.current) {
-      const scrollContainer = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]');
+      const scrollContainer = scrollAreaRef.current.querySelector(
+        "[data-radix-scroll-area-viewport]",
+      );
       if (scrollContainer) {
         scrollContainer.scrollTop = scrollContainer.scrollHeight;
       }
@@ -127,28 +133,24 @@ export default function AIChat() {
       setInputValue('');
       setIsTyping(true);
 
-      // Send request to n8n webhook with POST method and JSON body
+      // Call Supabase Edge Function proxy to avoid CORS
       try {
-        const response = await fetch(N8N_WEBHOOK_URL, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
+        console.log('Calling n8n via Supabase proxy...');
+
+        const { data, error } = await supabase.functions.invoke('supabase-functions-n8n-webhook-proxy', {
+          body: {
             message: userMessage,
             userId: user.id,
             timestamp: new Date().toISOString(),
-          }),
+          },
         });
 
-        if (!response.ok) {
-          throw new Error(`Webhook request failed: ${response.status}`);
-        }
+        if (error) throw error;
 
-        const data = await response.json();
-        
-        // Extract AI response from webhook
-        const aiResponse = data.response || data.message || data.advice || 
+        console.log('n8n response:', data);
+
+        // Extract AI response from webhook - check multiple possible fields including 'output'
+        const aiResponse = data.output || data.response || data.message || data.advice || 
                           'Thank you for sharing. I\'m here to support you on your mental health journey.';
 
         // Save AI response to database
@@ -161,6 +163,8 @@ export default function AIChat() {
           }]);
 
         if (aiError) throw aiError;
+
+        console.log('Message saved successfully');
 
       } catch (webhookError: any) {
         console.error('Webhook error:', webhookError);
@@ -197,7 +201,7 @@ export default function AIChat() {
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSendMessage();
     }
@@ -240,39 +244,47 @@ export default function AIChat() {
                 <div
                   key={message.id}
                   className={`flex items-start space-x-3 ${
-                    message.sender === 'user' ? 'flex-row-reverse space-x-reverse' : ''
+                    message.sender === "user"
+                      ? "flex-row-reverse space-x-reverse"
+                      : ""
                   }`}
                 >
                   <Avatar className="w-8 h-8">
-                    <AvatarFallback className={message.sender === 'ai' ? 'bg-primary/10' : 'bg-muted'}>
-                      {message.sender === 'ai' ? (
+                    <AvatarFallback
+                      className={
+                        message.sender === "ai" ? "bg-primary/10" : "bg-muted"
+                      }
+                    >
+                      {message.sender === "ai" ? (
                         <Bot className="h-4 w-4 text-primary" />
                       ) : (
                         <User className="h-4 w-4" />
                       )}
                     </AvatarFallback>
                   </Avatar>
-                  
-                  <div className={`flex-1 max-w-[80%] ${message.sender === 'user' ? 'text-right' : ''}`}>
+
+                  <div
+                    className={`flex-1 max-w-[80%] ${message.sender === "user" ? "text-right" : ""}`}
+                  >
                     <div
                       className={`inline-block p-3 rounded-lg ${
-                        message.sender === 'user'
-                          ? 'bg-primary text-white'
-                          : 'bg-muted'
+                        message.sender === "user"
+                          ? "bg-primary text-white"
+                          : "bg-muted"
                       }`}
                     >
                       <p className="text-sm">{message.content}</p>
                     </div>
                     <p className="text-xs text-muted-foreground mt-1">
-                      {new Date(message.created_at).toLocaleTimeString([], { 
-                        hour: '2-digit', 
-                        minute: '2-digit' 
+                      {new Date(message.created_at).toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
                       })}
                     </p>
                   </div>
                 </div>
               ))}
-              
+
               {isTyping && (
                 <div className="flex items-start space-x-3">
                   <Avatar className="w-8 h-8">
@@ -283,8 +295,14 @@ export default function AIChat() {
                   <div className="bg-muted p-3 rounded-lg">
                     <div className="flex space-x-1">
                       <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" />
-                      <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: '0.1s' }} />
-                      <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: '0.2s' }} />
+                      <div
+                        className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce"
+                        style={{ animationDelay: "0.1s" }}
+                      />
+                      <div
+                        className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce"
+                        style={{ animationDelay: "0.2s" }}
+                      />
                     </div>
                   </div>
                 </div>
@@ -292,7 +310,7 @@ export default function AIChat() {
             </div>
           </ScrollArea>
         </CardContent>
-        
+
         {/* Input Area */}
         <div className="border-t p-4">
           <div className="flex space-x-2">
@@ -304,7 +322,7 @@ export default function AIChat() {
               className="flex-1"
               disabled={isTyping}
             />
-            <Button 
+            <Button
               onClick={handleSendMessage}
               disabled={!inputValue.trim() || isTyping}
               size="icon"
@@ -313,7 +331,8 @@ export default function AIChat() {
             </Button>
           </div>
           <p className="text-xs text-muted-foreground mt-2 text-center">
-            This is a supportive space. Feel free to share your thoughts and feelings.
+            This is a supportive space. Feel free to share your thoughts and
+            feelings.
           </p>
         </div>
       </Card>
