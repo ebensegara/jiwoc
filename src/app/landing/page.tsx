@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import Footer from "@/components/footer";
 import Hero from "@/components/hero";
@@ -31,7 +31,7 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#f8f6f3] via-white to-[#f1ede8] dark:from-[#1b1918] dark:via-[#1f1d1a] dark:to-[#1b1918]">
       <Navbar />
-      
+
       {/* Hero Section with AI Self-Therapy Focus */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         {/* Background Image */}
@@ -48,7 +48,7 @@ export default function LandingPage() {
         <div className="absolute top-8 right-8 z-20">
           <div className="bg-green-500 text-white px-4 py-2 rounded-full flex items-center space-x-2 shadow-lg">
             <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
-            <span className="text-sm font-semibold">AI Terapis Online</span>
+            <span className="text-sm font-semibold">Pendamping AI Online</span>
           </div>
         </div>
 
@@ -56,21 +56,21 @@ export default function LandingPage() {
         <div className="relative z-10 max-w-6xl mx-auto px-6 text-center text-white">
           <div className="mb-6">
             <span className="inline-block bg-gradient-to-r from-[#756657] to-[#756657]/80 text-white px-6 py-2 rounded-full text-sm font-semibold mb-4">
-              SELF Therapy Berbasis AI - Cepat, Mudah, Terjangkau & Privat
+              Pendamping Berbasis AI - Cepat, Mudah, Terjangkau & Privat
             </span>
           </div>
-          
+
           <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
-            Terapi Hybrid AI & Professional
+            Life Coach AI + Professional
             <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#756657] to-[#a08875]">
               Kapan Saja, Di Mana Saja
             </span>
           </h1>
-          
+
           <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto leading-relaxed opacity-90">
-            Dapatkan dukungan kesehatan mental instan dengan AI terapis yang tersedia 24/7. 
-            Tanpa antrian, tanpa biaya tersembunyi, 100% privat.
+            Dapatkan dukungan kesehatan mental instan dengan pendamping AI yang
+            tersedia 24/7. Tanpa antrian, tanpa biaya tersembunyi, 100% privat.
           </p>
 
           {/* Benefits Grid */}
@@ -112,7 +112,7 @@ export default function LandingPage() {
               </Link>
             </div>
           </div>
-          
+
           <p className="text-sm opacity-75 mt-4">
             Tanpa biaya, tanpa komitmen, tanpa antrian
           </p>
@@ -124,10 +124,11 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
-              Visi Kami: Self Therapy Berbasis AI
+              Sahabat Jiwa , Setiap Hari
             </h2>
             <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-              Kami percaya setiap orang berhak mendapatkan dukungan kesehatan mental yang cepat, mudah, terjangkau, dan privat
+              Kami percaya setiap orang berhak mendapatkan dukungan kesehatan
+              mental yang cepat, mudah, terjangkau, dan privat
             </p>
           </div>
 
@@ -141,7 +142,8 @@ export default function LandingPage() {
               </CardHeader>
               <CardContent>
                 <p className="text-gray-600 dark:text-gray-300 text-center">
-                  Akses instan tanpa antrian. AI terapis siap membantu dalam hitungan detik.
+                  Akses instan tanpa antrian. Pendamping AI siap membantu dalam
+                  hitungan detik.
                 </p>
               </CardContent>
             </Card>
@@ -155,7 +157,8 @@ export default function LandingPage() {
               </CardHeader>
               <CardContent>
                 <p className="text-gray-600 dark:text-gray-300 text-center">
-                  Interface sederhana, dapat diakses dari mana saja dengan smartphone atau komputer.
+                  Interface sederhana, dapat diakses dari mana saja dengan
+                  smartphone atau komputer.
                 </p>
               </CardContent>
             </Card>
@@ -169,7 +172,8 @@ export default function LandingPage() {
               </CardHeader>
               <CardContent>
                 <p className="text-gray-600 dark:text-gray-300 text-center">
-                  Biaya jauh lebih murah dibanding terapi tradisional. Mulai gratis, lanjut dengan harga terjangkau.
+                  Biaya jauh lebih murah dibanding terapi tradisional. Mulai
+                  gratis, lanjut dengan harga terjangkau.
                 </p>
               </CardContent>
             </Card>
@@ -183,7 +187,8 @@ export default function LandingPage() {
               </CardHeader>
               <CardContent>
                 <p className="text-gray-600 dark:text-gray-300 text-center">
-                  100% anonim dan rahasia. Data Anda terenkripsi dan tidak dibagikan kepada siapapun.
+                  100% anonim dan rahasia. Data Anda terenkripsi dan tidak
+                  dibagikan kepada siapapun.
                 </p>
               </CardContent>
             </Card>
@@ -196,10 +201,11 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
-              Rasakan Pengalaman AI Terapis
+              Rasakan Pengalaman AI Life Coaching
             </h2>
             <p className="text-xl text-gray-600 dark:text-gray-300">
-              Lihat bagaimana AI terapis kami membantu Anda dengan empati dan pemahaman yang mendalam
+              Lihat bagaimana AI kami membantu Anda dengan empati dan pemahaman
+              yang mendalam
             </p>
           </div>
 
@@ -209,40 +215,50 @@ export default function LandingPage() {
                 <div className="w-3 h-3 bg-white/30 rounded-full mr-2"></div>
                 <div className="w-3 h-3 bg-white/30 rounded-full mr-2"></div>
                 <div className="w-3 h-3 bg-white/30 rounded-full mr-4"></div>
-                <span className="text-white font-semibold">Chat dengan AI Terapis</span>
+                <span className="text-white font-semibold">
+                  Chat dengan Life Coaching AI
+                </span>
                 <div className="ml-auto flex items-center text-white/80 text-sm">
                   <div className="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></div>
                   Online
                 </div>
               </div>
-              
+
               <div className="p-6 space-y-4 h-96 overflow-y-auto">
                 <div className="flex items-start space-x-3">
                   <div className="w-8 h-8 bg-gradient-to-br from-[#756657] to-[#756657]/80 rounded-full flex items-center justify-center">
                     <Brain className="w-4 h-4 text-white" />
                   </div>
                   <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-3 max-w-xs">
-                    <p className="text-sm">Halo! Saya AI Terapis Jiwo. Bagaimana perasaan Anda hari ini?</p>
+                    <p className="text-sm">
+                      Halo! Saya AI Jiwo. Bagaimana perasaan Anda hari ini?
+                    </p>
                   </div>
                 </div>
-                
+
                 <div className="flex items-start space-x-3 justify-end">
                   <div className="bg-[#756657] text-white rounded-lg p-3 max-w-xs">
-                    <p className="text-sm">Saya merasa cemas tentang pekerjaan...</p>
+                    <p className="text-sm">
+                      Saya merasa cemas tentang pekerjaan...
+                    </p>
                   </div>
                   <div className="w-8 h-8 bg-gray-300 dark:bg-gray-600 rounded-full"></div>
                 </div>
-                
+
                 <div className="flex items-start space-x-3">
                   <div className="w-8 h-8 bg-gradient-to-br from-[#756657] to-[#756657]/80 rounded-full flex items-center justify-center">
                     <Brain className="w-4 h-4 text-white" />
                   </div>
                   <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-3 max-w-xs">
-                    <p className="text-sm">Saya memahami perasaan cemas Anda. Mari kita eksplorasi lebih dalam. Apa yang spesifik membuat Anda cemas tentang pekerjaan?</p>
+                    <p className="text-sm">
+                      Saya memahami perasaan cemas Anda. Mari kita eksplorasi
+                      lebih dalam. Apa yang spesifik membuat Anda cemas tentang
+                      pekerjaan?
+                    </p>
                   </div>
                 </div>
               </div>
-              
+
               <div className="p-4 border-t border-gray-200 dark:border-gray-700">
                 <div className="flex items-center space-x-3">
                   <input
@@ -266,7 +282,7 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
-              Mengapa Memilih AI Terapis Kami?
+              Mengapa Memilih Life Coaching AI Kami?
             </h2>
           </div>
 
@@ -275,9 +291,12 @@ export default function LandingPage() {
               <div className="w-20 h-20 bg-gradient-to-br from-[#756657] to-[#756657]/80 rounded-full flex items-center justify-center mx-auto mb-6">
                 <Brain className="w-10 h-10 text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">AI Canggih</h3>
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+                AI Canggih
+              </h3>
               <p className="text-gray-600 dark:text-gray-300">
-                Dilatih dengan ribuan kasus terapi nyata dan teknik CBT terbukti efektif
+                Dilatih dengan ribuan kasus terapi nyata dan teknik CBT terbukti
+                efektif
               </p>
             </div>
 
@@ -285,7 +304,9 @@ export default function LandingPage() {
               <div className="w-20 h-20 bg-gradient-to-br from-[#756657] to-[#756657]/80 rounded-full flex items-center justify-center mx-auto mb-6">
                 <Shield className="w-10 h-10 text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Keamanan Terjamin</h3>
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+                Keamanan Terjamin
+              </h3>
               <p className="text-gray-600 dark:text-gray-300">
                 Enkripsi end-to-end dan standar keamanan medis internasional
               </p>
@@ -295,9 +316,12 @@ export default function LandingPage() {
               <div className="w-20 h-20 bg-gradient-to-br from-[#756657] to-[#756657]/80 rounded-full flex items-center justify-center mx-auto mb-6">
                 <TrendingUp className="w-10 h-10 text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Hasil Terukur</h3>
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+                Hasil Terukur
+              </h3>
               <p className="text-gray-600 dark:text-gray-300">
-                Tracking progress otomatis dan laporan perkembangan kesehatan mental
+                Tracking progress otomatis dan laporan perkembangan kesehatan
+                mental
               </p>
             </div>
           </div>
@@ -331,16 +355,17 @@ export default function LandingPage() {
             Mulai Perjalanan Kesehatan Mental Anda Hari Ini
           </h2>
           <p className="text-xl text-gray-600 dark:text-gray-300 mb-10">
-            Bergabunglah dengan ribuan orang yang telah merasakan manfaat AI terapis kami
+            Bergabunglah dengan ribuan orang yang telah merasakan manfaat Life
+            Coaching AI kami
           </p>
-          
+
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/auth"
               className="inline-flex items-center px-8 py-4 text-white bg-gradient-to-r from-[#756657] to-[#756657]/90 rounded-full hover:from-[#756657]/90 hover:to-[#756657]/80 transition-all duration-300 font-semibold text-lg shadow-lg"
             >
               <Brain className="w-6 h-6 mr-3" />
-              Coba AI Terapis Gratis
+              Coba Pedamping AI Gratis
               <ArrowUpRight className="w-5 h-5 ml-3" />
             </Link>
           </div>

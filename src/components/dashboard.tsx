@@ -63,6 +63,20 @@ const features = [
     icon: Users,
     image: 'https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=400&q=80',
   },
+  {
+    id: 'yoga-studio',
+    title: 'Yoga Studio',
+    description: 'Find your flow with guided yoga practices.',
+    icon: Heart,
+    image: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400&q=80',
+  },
+  {
+    id: 'art-therapy',
+    title: 'Art Therapy',
+    description: 'Express yourself through creative healing.',
+    icon: Heart,
+    image: 'https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=400&q=80',
+  },
 ];
 
 export default function Dashboard({ onNavigate }: DashboardProps) {
@@ -299,6 +313,8 @@ export default function Dashboard({ onNavigate }: DashboardProps) {
                           {feature.id === 'screening' && 'Take Assessment'}
                           {feature.id === 'insights' && 'View Insights'}
                           {feature.id === 'professionals' && 'View Recommendations'}
+                          {feature.id === 'yoga-studio' && 'Start Practice'}
+                          {feature.id === 'art-therapy' && 'Begin Creating'}
                         </span>
                         <ArrowRight className="h-5 w-5" />
                       </Button>
