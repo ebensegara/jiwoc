@@ -143,12 +143,29 @@ export default function YogaStudio({ onNavigate }: YogaStudioProps) {
 
                 <div className="bg-[#edeae8] dark:bg-[#2c2826] rounded-lg p-6 shadow-lg flex flex-col md:flex-row gap-6 items-start">
                   <div className="w-full md:w-1/3 aspect-video rounded-lg overflow-hidden relative group">
-                    <img alt="Yoga Nidra" className="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBNXLNUrOuxP8n19_aX-6WjQ5s7BH-qQmxGsZ73JgOpEE6sOj79u_jbyUvCT8zSfJY3-fGCP-eCIddE7sfONUHSJWEJxU9OfVFBhUtesSOynPHqOe0YSRhZl1q9FLfBTS95wYPN8z2puP-4I2YQFGa3NaaM9JEHsnpHm8Ow4dzYLfPNwPfNgCr7SzUsjbZlvhFca7esRL-OPBSLpF1v-Ig0xcMdBco0dRoOePXIdT2PN6dcgKvKz1lKyLDK_bcrjpyHNLK1L9IAlJ8"/>
-                    <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button className="w-16 h-16 rounded-full bg-[#765567]/80 flex items-center justify-center">
-                        <Play className="text-white w-8 h-8 ml-1" />
-                      </button>
-                    </div>
+                    {playingVideo === 'nidra' ? (
+                      <video 
+                        className="w-full h-full object-cover" 
+                        controls 
+                        autoPlay
+                        onEnded={() => setPlayingVideo(null)}
+                      >
+                        <source src="/videos/yoga-nidra.mp4" type="video/mp4" />
+                        Your browser does not support the video tag.
+                      </video>
+                    ) : (
+                      <>
+                        <img alt="Yoga Nidra" className="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBNXLNUrOuxP8n19_aX-6WjQ5s7BH-qQmxGsZ73JgOpEE6sOj79u_jbyUvCT8zSfJY3-fGCP-eCIddE7sfONUHSJWEJxU9OfVFBhUtesSOynPHqOe0YSRhZl1q9FLfBTS95wYPN8z2puP-4I2YQFGa3NaaM9JEHsnpHm8Ow4dzYLfPNwPfNgCr7SzUsjbZlvhFca7esRL-OPBSLpF1v-Ig0xcMdBco0dRoOePXIdT2PN6dcgKvKz1lKyLDK_bcrjpyHNLK1L9IAlJ8"/>
+                        <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                          <button 
+                            onClick={() => handlePlayVideo('nidra')}
+                            className="w-16 h-16 rounded-full bg-[#765567]/80 flex items-center justify-center hover:bg-[#765567] transition-colors"
+                          >
+                            <Play className="text-white w-8 h-8 ml-1" />
+                          </button>
+                        </div>
+                      </>
+                    )}
                   </div>
                   <div className="flex-1">
                     <h4 className="text-2xl font-bold mb-4 text-[#3b3430] dark:text-[#d1ccc8]">Yoga Nidra (Yoga Tidur)</h4>
@@ -261,12 +278,29 @@ export default function YogaStudio({ onNavigate }: YogaStudioProps) {
 
                 <div className="bg-[#edeae8] dark:bg-[#2c2826] rounded-lg p-6 shadow-lg flex flex-col md:flex-row-reverse gap-6 items-start">
                   <div className="w-full md:w-1/3 aspect-video rounded-lg overflow-hidden relative group">
-                    <img alt="Trauma-Informed Yoga" className="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB25RJGuXbSnfm6BxWWoJFdQfEsBKaTPZ8KxuP5QqGbg0lWXV_-p4Q74QfjIr3geItdAydMaDt6vgNjdqFIbXwzfsZSDM3NEeb9Ipz_L7RuJiSxaflQAiXXP-zPQOEGCsjBbF5BEbxglAlRwYlOULQ-30IvIxnKfXsxVfuNoAeKV6VjqUdRsffEIQOQCvEVeX7zy5kmZNqfRkF3ij00CCQ4Ve6hsjcrAiZ3akwBei2ClQyjXPnx3Mo3XwlzUht9Y5tn16UqSrecmB4"/>
-                    <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button className="w-16 h-16 rounded-full bg-[#765567]/80 flex items-center justify-center">
-                        <Play className="text-white w-8 h-8 ml-1" />
-                      </button>
-                    </div>
+                    {playingVideo === 'trauma' ? (
+                      <video 
+                        className="w-full h-full object-cover" 
+                        controls 
+                        autoPlay
+                        onEnded={() => setPlayingVideo(null)}
+                      >
+                        <source src="/videos/yoga-nidra.mp4" type="video/mp4" />
+                        Your browser does not support the video tag.
+                      </video>
+                    ) : (
+                      <>
+                        <img alt="Trauma-Informed Yoga" className="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB25RJGuXbSnfm6BxWWoJFdQfEsBKaTPZ8KxuP5QqGbg0lWXV_-p4Q74QfjIr3geItdAydMaDt6vgNjdqFIbXwzfsZSDM3NEeb9Ipz_L7RuJiSxaflQAiXXP-zPQOEGCsjBbF5BEbxglAlRwYlOULQ-30IvIxnKfXsxVfuNoAeKV6VjqUdRsffEIQOQCvEVeX7zy5kmZNqfRkF3ij00CCQ4Ve6hsjcrAiZ3akwBei2ClQyjXPnx3Mo3XwlzUht9Y5tn16UqSrecmB4"/>
+                        <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                          <button 
+                            onClick={() => handlePlayVideo('trauma')}
+                            className="w-16 h-16 rounded-full bg-[#765567]/80 flex items-center justify-center hover:bg-[#765567] transition-colors"
+                          >
+                            <Play className="text-white w-8 h-8 ml-1" />
+                          </button>
+                        </div>
+                      </>
+                    )}
                   </div>
                   <div className="flex-1">
                     <h4 className="text-2xl font-bold mb-4 text-[#3b3430] dark:text-[#d1ccc8]">Yoga untuk Trauma</h4>

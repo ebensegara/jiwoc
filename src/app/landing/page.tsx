@@ -64,7 +64,7 @@ export default function LandingPage() {
             Life Coach AI + Professional
             <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#756657] to-[#a08875]">
-              Kapan Saja, Di Mana Saja
+              Sahabat Jiwa ,Setiap Saat
             </span>
           </h1>
 
