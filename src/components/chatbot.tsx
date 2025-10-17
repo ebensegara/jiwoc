@@ -1,10 +1,70 @@
 'use client';
 
 import { useState } from 'react';
-import { MessageCircle, X } from 'lucide-react';
+import { MessageCircle, X, Send } from 'lucide-react';
 
 export default function Chatbot() {
   const [isOpen, setIsOpen] = useState(false);
+  const [messages, setMessages] = useState([
+    { id: 1, text: 'Halo! Saya AI Terapis Jiwo. Bagaimana perasaan Anda hari ini?', sender: 'ai' }
+  ]);
+  const [inputValue, setInputValue] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSendMessage = async () => {
+    if (!inputValue.trim() || isLoading) return;
+
+    const userMessage = inputValue.trim();
+    
+    // Add user message to chat
+    setMessages(prev => [...prev, { id: Date.now(), text: userMessage, sender: 'user' }]);
+    setInputValue('');
+    setIsLoading(true);
+
+    try {
+      // Send POST request to n8n webhook
+      const response = await fetch('https://dindon.app.n8n.cloud/webhook/jiwohook', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message: userMessage,
+          timestamp: new Date().toISOString(),
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to get response from AI');
+      }
+
+      const data = await response.json();
+      
+      // Extract AI response - check multiple possible fields
+      const aiResponse = data.output || data.response || data.message || data.advice || 
+        'Terima kasih telah berbagi. Saya di sini untuk mendukung Anda.';
+
+      // Add AI response to chat
+      setMessages(prev => [...prev, { id: Date.now() + 1, text: aiResponse, sender: 'ai' }]);
+    } catch (error) {
+      console.error('Error sending message:', error);
+      // Fallback response
+      setMessages(prev => [...prev, { 
+        id: Date.now() + 1, 
+        text: 'Maaf, saya mengalami kesulitan merespons. Silakan coba lagi.', 
+        sender: 'ai' 
+      }]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage();
+    }
+  };
 
   return (
     <>
@@ -25,17 +85,53 @@ export default function Chatbot() {
           </div>
           
           <div className="flex-1 p-4 overflow-y-auto">
-            <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-3 mb-4">
-              <p className="text-sm">Halo! Saya AI Terapis Jiwo. Bagaimana perasaan Anda hari ini?</p>
-            </div>
+            {messages.map((message) => (
+              <div
+                key={message.id}
+                className={`mb-4 ${message.sender === 'user' ? 'text-right' : ''}`}
+              >
+                <div
+                  className={`inline-block rounded-lg p-3 max-w-[80%] ${
+                    message.sender === 'user'
+                      ? 'bg-[#756657] text-white'
+                      : 'bg-gray-100 dark:bg-gray-800'
+                  }`}
+                >
+                  <p className="text-sm">{message.text}</p>
+                </div>
+              </div>
+            ))}
+            
+            {isLoading && (
+              <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-3 mb-4 inline-block">
+                <div className="flex space-x-1">
+                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" />
+                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }} />
+                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }} />
+                </div>
+              </div>
+            )}
           </div>
           
           <div className="p-4 border-t border-gray-200 dark:border-gray-700">
-            <input
-              type="text"
-              placeholder="Ketik pesan..."
-              className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#756657] dark:bg-gray-800"
-            />
+            <div className="flex space-x-2">
+              <input
+                type="text"
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                onKeyPress={handleKeyPress}
+                placeholder="Ketik pesan..."
+                className="flex-1 p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#756657] dark:bg-gray-800"
+                disabled={isLoading}
+              />
+              <button
+                onClick={handleSendMessage}
+                disabled={!inputValue.trim() || isLoading}
+                className="bg-[#756657] text-white p-3 rounded-lg hover:bg-[#756657]/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <Send className="w-5 h-5" />
+              </button>
+            </div>
           </div>
         </div>
       )}

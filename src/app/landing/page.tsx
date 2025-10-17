@@ -248,7 +248,7 @@ export default function LandingPage() {
                     disabled
                   />
                   <button className="bg-[#756657] text-white p-3 rounded-lg hover:bg-[#756657]/90 transition-colors">
-                    <MessageCircle className="w-5 h-5" />
+                    <MessageCircle className="w-5 h-5 text-green-400" />
                   </button>
                 </div>
               </div>
