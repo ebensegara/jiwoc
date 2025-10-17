@@ -93,26 +93,6 @@ export default function LandingPage() {
             </div>
           </div>
 
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <div className="inline-flex items-center space-x-4 bg-white dark:bg-[#1b1918] p-2 rounded-full shadow-lg border border-[#756657]/20">
-              <Link
-                href="/auth"
-                className="inline-flex items-center px-8 py-3 text-white bg-gradient-to-r from-[#756657] to-[#756657]/90 rounded-full hover:from-[#756657]/90 hover:to-[#756657]/80 transition-all duration-300 font-semibold"
-              >
-                <Brain className="w-5 h-5 mr-2" />
-                Sign In
-                <ArrowUpRight className="w-4 h-4 ml-2" />
-              </Link>
-              <Link
-                href="/auth/signup"
-                className="inline-flex items-center px-6 py-3 text-[#756657] hover:text-[#756657]/80 transition-colors font-semibold"
-              >
-                Sign Up (Test)
-              </Link>
-            </div>
-          </div>
-
           <p className="text-sm opacity-75 mt-4">
             Tanpa biaya, tanpa komitmen, tanpa antrian
           </p>

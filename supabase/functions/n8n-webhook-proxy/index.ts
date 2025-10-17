@@ -1,6 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
-const N8N_WEBHOOK_URL = "https://dindon.app.n8n.cloud/webhook-test/jiwohook";
+const N8N_WEBHOOK_URL = "https://dindon.app.n8n.cloud/webhook/jiwohook";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
