@@ -16,36 +16,36 @@ interface SelfScreeningProps {
 const questions = [
   {
     id: 'q1',
-    text: 'How often have you been bothered by feeling down, depressed, or hopeless over the last two weeks?',
+    text: 'Seberapa sering Anda merasa sedih, depresi, atau putus asa dalam dua minggu terakhir?',
     number: 1,
   },
   {
     id: 'q2', 
-    text: 'How often have you had trouble falling or staying asleep, or sleeping too much?',
+    text: 'Seberapa sering Anda mengalami kesulitan tidur, sering terbangun, atau tidur terlalu banyak?',
     number: 2,
   },
   {
     id: 'q3',
-    text: 'How often have you felt tired or had little energy?',
+    text: 'Seberapa sering Anda merasa lelah atau kurang energi?',
     number: 3,
   },
   {
     id: 'q4',
-    text: 'How often have you had poor appetite or overeating?',
+    text: 'Seberapa sering Anda mengalami nafsu makan berkurang atau makan berlebihan?',
     number: 4,
   },
   {
     id: 'q5',
-    text: 'How often have you had trouble concentrating on things, such as reading or watching television?',
+    text: 'Seberapa sering Anda kesulitan berkonsentrasi pada hal-hal seperti membaca atau menonton televisi?',
     number: 5,
   },
 ];
 
 const options = [
-  { value: '0', label: 'Not at all' },
-  { value: '1', label: 'Several days' },
-  { value: '2', label: 'More than half the days' },
-  { value: '3', label: 'Nearly every day' },
+  { value: '0', label: 'Tidak sama sekali' },
+  { value: '1', label: 'Beberapa hari' },
+  { value: '2', label: 'Lebih dari setengah hari' },
+  { value: '3', label: 'Hampir setiap hari' },
 ];
 
 export default function SelfScreening({ onNavigate }: SelfScreeningProps) {
@@ -66,29 +66,31 @@ export default function SelfScreening({ onNavigate }: SelfScreeningProps) {
       } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      const totalScore = Object.values(answers).reduce((a, b) => a + b, 0);
+      const totalScore = Object.values(answers).reduce((sum, value) => sum + parseInt(value || '0'), 0);
 
-      const { error } = await supabase.from("screening_results").insert([
+      const { error } = await supabase.from("screenings").insert([
         {
           user_id: user.id,
+          screening_type: 'mental_health',
           score: totalScore,
-          answers: answers,
+          responses: answers,
+          severity_level: totalScore <= 4 ? 'minimal' : totalScore <= 9 ? 'mild' : totalScore <= 14 ? 'moderate' : 'severe'
         },
       ]);
 
       if (error) throw error;
 
       setScore(totalScore);
-      setShowResults(true);
+      setIsSubmitted(true);
 
       toast({
-        title: "Assessment Complete",
-        description: "Your results have been saved.",
+        title: "Penilaian Selesai",
+        description: "Hasil Anda telah disimpan.",
       });
     } catch (error: any) {
       toast({
         title: "Error",
-        description: error.message || "Failed to save results",
+        description: error.message || "Gagal menyimpan hasil",
         variant: "destructive",
       });
     }
@@ -97,10 +99,51 @@ export default function SelfScreening({ onNavigate }: SelfScreeningProps) {
   const getScoreInterpretation = () => {
     const totalScore = Object.values(answers).reduce((sum, value) => sum + parseInt(value || '0'), 0);
     
-    if (totalScore <= 4) return { level: 'Minimal', color: 'text-green-600', description: 'Your responses suggest minimal symptoms.' };
-    if (totalScore <= 9) return { level: 'Mild', color: 'text-yellow-600', description: 'Your responses suggest mild symptoms.' };
-    if (totalScore <= 14) return { level: 'Moderate', color: 'text-orange-600', description: 'Your responses suggest moderate symptoms.' };
-    return { level: 'Severe', color: 'text-red-600', description: 'Your responses suggest more significant symptoms.' };
+    if (totalScore <= 4) return { 
+      level: 'Minimal', 
+      color: 'text-green-600', 
+      description: 'Respons Anda menunjukkan gejala minimal.',
+      recommendation: 'Anda dalam kondisi baik! Pertahankan kesehatan mental Anda dengan:',
+      suggestions: [
+        'Life Coaching untuk pengembangan diri',
+        'Yoga Studio untuk relaksasi',
+        'Art Therapy untuk ekspresi kreatif'
+      ]
+    };
+    if (totalScore <= 9) return { 
+      level: 'Ringan', 
+      color: 'text-yellow-600', 
+      description: 'Respons Anda menunjukkan gejala ringan.',
+      recommendation: 'Anda mungkin mengalami stres ringan. Disarankan untuk:',
+      suggestions: [
+        'Life Coaching untuk dukungan emosional',
+        'Yoga Studio untuk mengurangi stres',
+        'Art Therapy untuk healing kreatif',
+        'Konsultasi dengan Psikolog jika gejala berlanjut'
+      ]
+    };
+    if (totalScore <= 14) return { 
+      level: 'Sedang', 
+      color: 'text-orange-600', 
+      description: 'Respons Anda menunjukkan gejala sedang.',
+      recommendation: 'Kami sangat menyarankan Anda untuk:',
+      suggestions: [
+        'Konsultasi dengan Psikolog untuk terapi',
+        'Life Coaching sebagai dukungan tambahan',
+        'Yoga dan Art Therapy sebagai terapi komplementer'
+      ]
+    };
+    return { 
+      level: 'Berat', 
+      color: 'text-red-600', 
+      description: 'Respons Anda menunjukkan gejala yang signifikan.',
+      recommendation: 'Segera konsultasi dengan profesional:',
+      suggestions: [
+        'Psikiater untuk evaluasi medis dan pengobatan',
+        'Psikolog untuk terapi intensif',
+        'Dukungan keluarga dan teman terdekat'
+      ]
+    };
   };
 
   const allQuestionsAnswered = questions.every(q => answers[q.id]);
@@ -112,39 +155,63 @@ export default function SelfScreening({ onNavigate }: SelfScreeningProps) {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="max-w-2xl mx-auto">
             <Card className="bg-white/70 dark:bg-black/70 backdrop-blur-sm shadow-lg">
-              <CardContent className="p-8 text-center">
-                <div className="mb-6">
+              <CardContent className="p-8">
+                <div className="mb-6 text-center">
                   <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                     <Heart className="h-8 w-8 text-green-600" />
                   </div>
                   <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-2">
-                    Assessment Complete
+                    Penilaian Selesai
                   </h2>
                   <p className="text-gray-600 dark:text-gray-300">
-                    Thank you for completing the self-screening assessment.
+                    Terima kasih telah menyelesaikan penilaian kesehatan mental.
                   </p>
                 </div>
                 
                 <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-6 mb-6">
-                  <h3 className="text-lg font-semibold mb-2">Your Results</h3>
+                  <h3 className="text-lg font-semibold mb-2">Hasil Anda</h3>
                   <p className={`text-xl font-bold ${interpretation.color} mb-2`}>
-                    {interpretation.level} Symptoms
+                    Gejala {interpretation.level}
                   </p>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
                     {interpretation.description}
                   </p>
                 </div>
 
-                <div className="text-sm text-gray-600 dark:text-gray-400 mb-6">
-                  <p>This assessment is not a diagnosis. Please consult with a healthcare professional for proper evaluation and support.</p>
+                <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-6 mb-6">
+                  <h3 className="text-lg font-semibold mb-3 text-blue-900 dark:text-blue-100">
+                    {interpretation.recommendation}
+                  </h3>
+                  <ul className="space-y-2">
+                    {interpretation.suggestions.map((suggestion, index) => (
+                      <li key={index} className="flex items-start gap-2 text-sm text-gray-700 dark:text-gray-300">
+                        <span className="text-blue-600 dark:text-blue-400 mt-1">•</span>
+                        <span>{suggestion}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
 
-                <Button 
-                  onClick={() => onNavigate?.('dashboard')}
-                  className="w-full"
-                >
-                  Return to Dashboard
-                </Button>
+                <div className="text-sm text-gray-600 dark:text-gray-400 mb-6 p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
+                  <p className="font-semibold mb-1">⚠️ Catatan Penting:</p>
+                  <p>Penilaian ini bukan diagnosis medis. Silakan konsultasi dengan profesional kesehatan mental untuk evaluasi dan dukungan yang tepat.</p>
+                </div>
+
+                <div className="space-y-3">
+                  <Button 
+                    onClick={() => onNavigate?.('professionals')}
+                    className="w-full bg-primary"
+                  >
+                    Lihat Profesional
+                  </Button>
+                  <Button 
+                    onClick={() => onNavigate?.('dashboard')}
+                    variant="outline"
+                    className="w-full"
+                  >
+                    Kembali ke Dashboard
+                  </Button>
+                </div>
               </CardContent>
             </Card>
           </div>
@@ -207,11 +274,11 @@ export default function SelfScreening({ onNavigate }: SelfScreeningProps) {
               {/* Header */}
               <div className="text-center mb-8">
                 <h2 className="text-3xl font-bold text-gray-800 dark:text-white mb-2">
-                  Self-Screening Assessment
+                  Penilaian Kesehatan Mental
                 </h2>
                 <p className="text-gray-600 dark:text-gray-300">
-                  Answer these questions to help us understand your current well-being. 
-                  Your responses are confidential and will help us tailor support for you.
+                  Jawab pertanyaan-pertanyaan ini untuk membantu kami memahami kondisi Anda saat ini. 
+                  Respons Anda bersifat rahasia dan akan membantu kami memberikan dukungan yang tepat.
                 </p>
               </div>
 
@@ -259,11 +326,11 @@ export default function SelfScreening({ onNavigate }: SelfScreeningProps) {
                     disabled={!allQuestionsAnswered}
                     className="w-full bg-primary text-white font-bold py-3 px-4 rounded-lg hover:bg-primary/90 focus:outline-none focus:ring-4 focus:ring-primary/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    Submit Assessment
+                    Kirim Penilaian
                   </Button>
                   {!allQuestionsAnswered && (
                     <p className="text-sm text-gray-500 dark:text-gray-400 text-center mt-2">
-                      Please answer all questions to submit the assessment
+                      Mohon jawab semua pertanyaan untuk mengirim penilaian
                     </p>
                   )}
                 </div>
