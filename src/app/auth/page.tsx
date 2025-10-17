@@ -65,7 +65,7 @@ export default function AuthPage() {
           email,
           password,
           options: {
-            emailRedirectTo: `${window.location.origin}/`,
+            emailRedirectTo: `${window.location.origin}/auth/callback`,
             data: {
               full_name: fullName,
             },
@@ -120,7 +120,7 @@ export default function AuthPage() {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: `${window.location.origin}/`,
+          redirectTo: `${window.location.origin}/auth/callback`,
         },
       });
 
@@ -139,7 +139,7 @@ export default function AuthPage() {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "facebook",
         options: {
-          redirectTo: `${window.location.origin}/`,
+          redirectTo: `${window.location.origin}/auth/callback`,
         },
       });
 
@@ -267,6 +267,7 @@ export default function AuthPage() {
           </form>
 
           {/* Divider */}
+          {/* Temporarily hidden
           <div className="relative my-6">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-[#9e8d7d]/30 dark:border-[#7c6a76]/30"></div>
@@ -277,8 +278,10 @@ export default function AuthPage() {
               </span>
             </div>
           </div>
+          */}
 
           {/* Social Login Buttons */}
+          {/* Temporarily hidden
           <div className="space-y-4">
             <button
               type="button"
@@ -324,6 +327,7 @@ export default function AuthPage() {
               Continue with Facebook
             </button>
           </div>
+          */}
         </div>
       </div>
     </div>
