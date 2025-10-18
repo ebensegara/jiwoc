@@ -18,7 +18,7 @@ export default function DashboardPage() {
       const { data: { user } } = await supabase.auth.getUser();
       
       if (!user) {
-        router.push("/auth");
+        router.replace("/auth");
         return;
       }
 
@@ -31,14 +31,14 @@ export default function DashboardPage() {
 
       if (professional && !profError) {
         // User is a professional
-        router.push("/dashboard/professional");
+        router.replace("/dashboard/professional");
       } else {
         // Regular user
-        router.push("/dashboard/user");
+        router.replace("/dashboard/user");
       }
     } catch (error) {
       // Fallback to user dashboard on error
-      router.push("/dashboard/user");
+      router.replace("/dashboard/user");
     } finally {
       setIsLoading(false);
     }

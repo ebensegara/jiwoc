@@ -25,7 +25,7 @@ export default function Page() {
     const checkAuth = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
-        router.push('/landing');
+        router.replace('/landing');
       } else {
         setIsAuthenticated(true);
       }
@@ -36,7 +36,7 @@ export default function Page() {
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       if (!session) {
-        router.push('/landing');
+        router.replace('/landing');
       } else {
         setIsAuthenticated(true);
       }
