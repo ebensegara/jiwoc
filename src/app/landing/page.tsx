@@ -61,10 +61,10 @@ export default function LandingPage() {
           </div>
 
           <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
-            Life Coach AI + Professional
+            Hybrid AI + Human Support
             <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#756657] to-[#a08875]">
-              Sahabat Jiwa ,Setiap Saat
+              Sahabat Jiwa Setiap Saat
             </span>
           </h1>
 
@@ -94,7 +94,7 @@ export default function LandingPage() {
           </div>
 
           <p className="text-sm opacity-75 mt-4">
-            Tanpa biaya, tanpa komitmen, tanpa antrian
+            Tanpa biaya tersembunyi, tanpa komitmen, tanpa antrian
           </p>
         </div>
       </section>
