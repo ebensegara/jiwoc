@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,8 +14,24 @@ export default function AuthPage() {
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
   const [loading, setLoading] = useState(false);
+  const [checkingAuth, setCheckingAuth] = useState(true);
   const router = useRouter();
   const { toast } = useToast();
+
+  // Check if user is already logged in
+  useEffect(() => {
+    const checkSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        // User is already logged in, redirect to home
+        router.replace('/');
+      } else {
+        setCheckingAuth(false);
+      }
+    };
+
+    checkSession();
+  }, [router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -58,7 +74,8 @@ export default function AuthPage() {
           description: "You've successfully logged in.",
         });
 
-        router.push("/");
+        // Use replace instead of push to prevent back navigation to auth page
+        router.replace("/");
       } else {
         // Sign Up
         const { data, error } = await supabase.auth.signUp({
@@ -99,7 +116,8 @@ export default function AuthPage() {
         });
 
         if (!loginError) {
-          router.push("/");
+          // Use replace instead of push
+          router.replace("/");
         } else {
           setIsLogin(true);
         }
@@ -152,6 +170,18 @@ export default function AuthPage() {
       });
     }
   };
+
+  // Show loading while checking auth
+  if (checkingAuth) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-[#e6e2df] to-[#9e8d7d] dark:from-[#1a1618] dark:to-[#4d4349]">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#765567] mx-auto"></div>
+          <p className="mt-4 text-[#9e8d7d] dark:text-[#7c6a76]">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-gradient-to-br from-[#e6e2df] to-[#9e8d7d] dark:from-[#1a1618] dark:to-[#4d4349]">
