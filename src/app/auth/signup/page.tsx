@@ -24,8 +24,8 @@ export default function SignupPage() {
     const checkSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
-        // User is already logged in, redirect to dashboard
-        router.replace('/dashboard/user');
+        // User is already logged in, redirect to home
+        router.replace('/');
       } else {
         setCheckingAuth(false);
       }
@@ -110,12 +110,8 @@ export default function SignupPage() {
       });
 
       if (!loginError) {
-        // Redirect directly to dashboard based on role
-        if (role === "professional") {
-          router.replace("/dashboard/professional");
-        } else {
-          router.replace("/dashboard/user");
-        }
+        // Redirect to home (dashboard)
+        router.replace("/");
       } else {
         router.replace("/auth");
       }
