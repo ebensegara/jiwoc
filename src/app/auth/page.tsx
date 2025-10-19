@@ -23,8 +23,8 @@ export default function AuthPage() {
     const checkSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
-        // User is already logged in, redirect to home
-        router.replace('/');
+        // User is already logged in, redirect to dashboard
+        router.replace('/dashboard/user');
       } else {
         setCheckingAuth(false);
       }
@@ -74,8 +74,8 @@ export default function AuthPage() {
           description: "You've successfully logged in.",
         });
 
-        // Use replace instead of push to prevent back navigation to auth page
-        router.replace("/");
+        // Redirect directly to dashboard, replacing history
+        router.replace("/dashboard/user");
       } else {
         // Sign Up
         const { data, error } = await supabase.auth.signUp({
@@ -116,8 +116,8 @@ export default function AuthPage() {
         });
 
         if (!loginError) {
-          // Use replace instead of push
-          router.replace("/");
+          // Redirect directly to dashboard
+          router.replace("/dashboard/user");
         } else {
           setIsLogin(true);
         }

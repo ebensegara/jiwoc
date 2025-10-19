@@ -36,6 +36,39 @@ export default function UserDashboard() {
   useEffect(() => {
     fetchProfessionals();
 
+    // PWA Back Button Handler - Exit app after 2 back presses
+    let backPressCount = 0;
+    let backPressTimer: NodeJS.Timeout;
+
+    const handleBackButton = (e: PopStateEvent) => {
+      backPressCount++;
+      
+      if (backPressCount === 1) {
+        // First back press - show toast
+        toast({
+          title: "Press back again to exit",
+          description: "Tap back once more to close the app",
+          duration: 2000,
+        });
+        
+        // Reset counter after 2 seconds
+        backPressTimer = setTimeout(() => {
+          backPressCount = 0;
+        }, 2000);
+        
+        // Push state back to prevent navigation
+        window.history.pushState(null, "", window.location.href);
+      } else if (backPressCount === 2) {
+        // Second back press - allow exit
+        clearTimeout(backPressTimer);
+        window.history.back();
+      }
+    };
+
+    // Push initial state to enable back button handling
+    window.history.pushState(null, "", window.location.href);
+    window.addEventListener("popstate", handleBackButton);
+
     // Subscribe to availability changes
     const subscription = supabase
       .channel("professionals-availability")
@@ -53,6 +86,8 @@ export default function UserDashboard() {
       .subscribe();
 
     return () => {
+      window.removeEventListener("popstate", handleBackButton);
+      clearTimeout(backPressTimer);
       supabase.removeChannel(subscription);
     };
   }, []);
