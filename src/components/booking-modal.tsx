@@ -8,8 +8,9 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/lib/supabase";
-import { Loader2 } from "lucide-react";
+import { Loader2, Calendar as CalendarIcon } from "lucide-react";
 import QRISPaymentModal from "./qris-payment-modal";
+import { format } from "date-fns";
 
 interface BookingModalProps {
   open: boolean;
@@ -28,7 +29,7 @@ export default function BookingModal({
   professional,
   onSuccess,
 }: BookingModalProps) {
-  const [date, setDate] = useState<Date | undefined>(new Date());
+  const [date, setDate] = useState<Date | undefined>(undefined);
   const [time, setTime] = useState("10:00");
   const [notes, setNotes] = useState("");
   const [loading, setLoading] = useState(false);
@@ -129,10 +130,17 @@ export default function BookingModal({
     onSuccess();
   };
 
+  // Disable past dates
+  const disabledDays = (date: Date) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return date < today;
+  };
+
   return (
     <>
       <Dialog open={open && !showQRModal} onOpenChange={onClose}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Book Session with {professional.full_name}</DialogTitle>
             <DialogDescription>
@@ -140,28 +148,39 @@ export default function BookingModal({
             </DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-4 py-4">
+          <div className="space-y-6 py-4">
             <div>
-              <Label>Select Date</Label>
-              <Calendar
-                mode="single"
-                selected={date}
-                onSelect={setDate}
-                disabled={(date) => date < new Date()}
-                className="rounded-md border"
-              />
+              <Label className="text-base font-semibold mb-3 flex items-center gap-2">
+                <CalendarIcon className="h-4 w-4" />
+                Select Date
+              </Label>
+              <div className="flex justify-center">
+                <Calendar
+                  mode="single"
+                  selected={date}
+                  onSelect={setDate}
+                  disabled={disabledDays}
+                  className="rounded-md border bg-white dark:bg-slate-800"
+                  initialFocus
+                />
+              </div>
+              {date && (
+                <p className="text-sm text-center mt-2 text-[#756657] dark:text-[#e6e2df] font-medium">
+                  Selected: {format(date, "EEEE, MMMM d, yyyy")}
+                </p>
+              )}
             </div>
 
             <div>
-              <Label>Select Time</Label>
-              <div className="grid grid-cols-4 gap-2 mt-2">
+              <Label className="text-base font-semibold mb-3">Select Time</Label>
+              <div className="grid grid-cols-4 gap-2">
                 {timeSlots.map((slot) => (
                   <Button
                     key={slot}
                     variant={time === slot ? "default" : "outline"}
                     size="sm"
                     onClick={() => setTime(slot)}
-                    className={time === slot ? "bg-[#756657]" : ""}
+                    className={time === slot ? "bg-[#756657] hover:bg-[#756657]/90" : ""}
                   >
                     {slot}
                   </Button>
@@ -170,19 +189,19 @@ export default function BookingModal({
             </div>
 
             <div>
-              <Label>Notes (Optional)</Label>
+              <Label className="text-base font-semibold mb-2">Notes (Optional)</Label>
               <Textarea
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 placeholder="Any specific concerns or topics you'd like to discuss..."
-                className="mt-2"
+                className="mt-2 min-h-[100px]"
               />
             </div>
 
             <Button
               onClick={handleBookSession}
-              disabled={loading}
-              className="w-full bg-[#756657] hover:bg-[#756657]/90"
+              disabled={loading || !date}
+              className="w-full bg-[#756657] hover:bg-[#756657]/90 text-white"
             >
               {loading ? (
                 <>

@@ -135,17 +135,37 @@ async function processBookingPayment(payment: any) {
     .single();
 
   if (booking) {
-    // Create chat channel
-    const { error: channelError } = await supabase
+    // Check if chat channel already exists
+    const { data: existingChannel } = await supabase
       .from('chat_channels')
-      .insert({
-        user_id: booking.user_id,
-        professional_id: booking.professional_id,
-        booking_id,
-      });
+      .select('id')
+      .eq('user_id', booking.user_id)
+      .eq('professional_id', booking.professional_id)
+      .single();
 
-    if (channelError) {
-      console.error('Error creating chat channel:', channelError);
+    if (existingChannel) {
+      // Update existing channel with booking_id
+      const { error: updateError } = await supabase
+        .from('chat_channels')
+        .update({ booking_id })
+        .eq('id', existingChannel.id);
+
+      if (updateError) {
+        console.error('Error updating chat channel:', updateError);
+      }
+    } else {
+      // Create new chat channel
+      const { error: channelError } = await supabase
+        .from('chat_channels')
+        .insert({
+          user_id: booking.user_id,
+          professional_id: booking.professional_id,
+          booking_id,
+        });
+
+      if (channelError) {
+        console.error('Error creating chat channel:', channelError);
+      }
     }
   }
 }
