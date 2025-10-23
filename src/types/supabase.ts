@@ -94,32 +94,41 @@ export type Database = {
       }
       bookings: {
         Row: {
-          appointment_date: string
+          appointment_date: string | null
           created_at: string | null
           id: string
           notes: string | null
+          payment_ref: string | null
+          price: number | null
           professional_id: string
           screening_id: string | null
+          session_time: string | null
           status: string | null
           user_id: string
         }
         Insert: {
-          appointment_date: string
+          appointment_date?: string | null
           created_at?: string | null
           id?: string
           notes?: string | null
+          payment_ref?: string | null
+          price?: number | null
           professional_id: string
           screening_id?: string | null
+          session_time?: string | null
           status?: string | null
           user_id: string
         }
         Update: {
-          appointment_date?: string
+          appointment_date?: string | null
           created_at?: string | null
           id?: string
           notes?: string | null
+          payment_ref?: string | null
+          price?: number | null
           professional_id?: string
           screening_id?: string | null
+          session_time?: string | null
           status?: string | null
           user_id?: string
         }
@@ -206,6 +215,7 @@ export type Database = {
       }
       chat_channels: {
         Row: {
+          booking_id: string | null
           created_at: string | null
           id: string
           professional_id: string
@@ -214,6 +224,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          booking_id?: string | null
           created_at?: string | null
           id?: string
           professional_id: string
@@ -222,6 +233,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          booking_id?: string | null
           created_at?: string | null
           id?: string
           professional_id?: string
@@ -230,6 +242,13 @@ export type Database = {
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "chat_channels_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "chat_channels_professional_id_fkey"
             columns: ["professional_id"]
@@ -309,6 +328,27 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      documents: {
+        Row: {
+          content: string | null
+          embedding: string | null
+          id: number
+          metadata: Json | null
+        }
+        Insert: {
+          content?: string | null
+          embedding?: string | null
+          id?: number
+          metadata?: Json | null
+        }
+        Update: {
+          content?: string | null
+          embedding?: string | null
+          id?: number
+          metadata?: Json | null
+        }
+        Relationships: []
       }
       insight: {
         Row: {
@@ -551,6 +591,75 @@ export type Database = {
           },
         ]
       }
+      payments: {
+        Row: {
+          amount: number
+          created_at: string | null
+          id: string
+          metadata: Json | null
+          payment_type: string
+          qris_link: string | null
+          ref_code: string
+          status: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string | null
+          id?: string
+          metadata?: Json | null
+          payment_type: string
+          qris_link?: string | null
+          ref_code: string
+          status?: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string | null
+          id?: string
+          metadata?: Json | null
+          payment_type?: string
+          qris_link?: string | null
+          ref_code?: string
+          status?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      plans: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          duration_days: number
+          features: Json | null
+          id: string
+          name: string
+          price: number
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          duration_days: number
+          features?: Json | null
+          id?: string
+          name: string
+          price: number
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          duration_days?: number
+          features?: Json | null
+          id?: string
+          name?: string
+          price?: number
+        }
+        Relationships: []
+      }
       professionals: {
         Row: {
           bio: string | null
@@ -561,6 +670,7 @@ export type Database = {
           id: string
           is_available: boolean | null
           photo_url: string | null
+          price_per_session: number | null
           rating: number | null
           specialization: string | null
           title: string | null
@@ -575,6 +685,7 @@ export type Database = {
           id?: string
           is_available?: boolean | null
           photo_url?: string | null
+          price_per_session?: number | null
           rating?: number | null
           specialization?: string | null
           title?: string | null
@@ -589,6 +700,7 @@ export type Database = {
           id?: string
           is_available?: boolean | null
           photo_url?: string | null
+          price_per_session?: number | null
           rating?: number | null
           specialization?: string | null
           title?: string | null
@@ -722,6 +834,47 @@ export type Database = {
           },
         ]
       }
+      subscriptions: {
+        Row: {
+          created_at: string | null
+          end_date: string | null
+          id: string
+          payment_ref: string | null
+          plan_id: string
+          start_date: string | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          end_date?: string | null
+          id?: string
+          payment_ref?: string | null
+          plan_id: string
+          start_date?: string | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          end_date?: string | null
+          id?: string
+          payment_ref?: string | null
+          plan_id?: string
+          start_date?: string | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscriptions_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "plans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_badges: {
         Row: {
           badge_id: string | null
@@ -796,7 +949,15 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      match_documents: {
+        Args: { filter?: Json; match_count?: number; query_embedding: string }
+        Returns: {
+          content: string
+          id: number
+          metadata: Json
+          similarity: number
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never

@@ -7,9 +7,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Search, MessageCircle, Star } from "lucide-react";
+import { Loader2, Search, MessageCircle, Star, DollarSign } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import ChatWindow from "@/components/care-chat/ChatWindow";
+import BookingModal from "@/components/booking-modal";
 
 interface Professional {
   id: string;
@@ -20,6 +21,7 @@ interface Professional {
   rating: number;
   photo_url: string;
   is_available: boolean;
+  price_per_session: number;
 }
 
 export default function UserDashboard() {
@@ -28,6 +30,8 @@ export default function UserDashboard() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [selectedProfessional, setSelectedProfessional] = useState<Professional | null>(null);
+  const [showChatModal, setShowChatModal] = useState(false);
+  const [showBookingModal, setShowBookingModal] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
 
@@ -135,6 +139,16 @@ export default function UserDashboard() {
     }
 
     setFilteredProfessionals(filtered);
+  };
+
+  const handleChatNow = (professional: Professional) => {
+    setSelectedProfessional(professional);
+    setShowChatModal(true);
+  };
+
+  const handleBookSession = (professional: Professional) => {
+    setSelectedProfessional(professional);
+    setShowBookingModal(true);
   };
 
   if (isLoading) {
@@ -247,14 +261,28 @@ export default function UserDashboard() {
                     {professional.bio}
                   </p>
 
-                  <Button
-                    onClick={() => setSelectedProfessional(professional)}
-                    className="w-full bg-[#8B6CFD] hover:bg-[#7a5ce6] text-white"
-                    disabled={!professional.is_available}
-                  >
-                    <MessageCircle className="h-4 w-4 mr-2" />
-                    {professional.is_available ? "Chat Now" : "Unavailable"}
-                  </Button>
+                  <div className="flex items-center gap-2 mb-4 text-[#756657] dark:text-[#e6e2df] font-semibold">
+                    <DollarSign className="h-5 w-5" />
+                    <span>Rp {professional.price_per_session.toLocaleString()} / session</span>
+                  </div>
+
+                  <div className="flex gap-2">
+                    <Button
+                      onClick={() => handleBookSession(professional)}
+                      className="flex-1 bg-[#756657] hover:bg-[#756657]/90 text-white"
+                    >
+                      Book Session
+                    </Button>
+                    <Button
+                      onClick={() => handleChatNow(professional)}
+                      variant="outline"
+                      className="flex-1"
+                      disabled={!professional.is_available}
+                    >
+                      <MessageCircle className="h-4 w-4 mr-2" />
+                      {professional.is_available ? "Chat" : "Offline"}
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>
             ))}
@@ -263,11 +291,34 @@ export default function UserDashboard() {
       </main>
 
       {/* Chat Window Modal */}
-      {selectedProfessional && (
+      {showChatModal && selectedProfessional && (
         <ChatWindow
           professionalId={selectedProfessional.id}
           professionalName={selectedProfessional.title}
-          onClose={() => setSelectedProfessional(null)}
+          onClose={() => {
+            setShowChatModal(false);
+            setSelectedProfessional(null);
+          }}
+        />
+      )}
+
+      {/* Booking Modal */}
+      {showBookingModal && selectedProfessional && (
+        <BookingModal
+          open={showBookingModal}
+          onClose={() => {
+            setShowBookingModal(false);
+            setSelectedProfessional(null);
+          }}
+          professional={{
+            id: selectedProfessional.id,
+            full_name: selectedProfessional.title,
+            price_per_session: selectedProfessional.price_per_session,
+          }}
+          onSuccess={() => {
+            setShowBookingModal(false);
+            setSelectedProfessional(null);
+          }}
         />
       )}
     </div>

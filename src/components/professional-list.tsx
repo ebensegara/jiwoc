@@ -4,10 +4,11 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Star, MapPin, Clock, DollarSign } from 'lucide-react';
+import { ArrowLeft, Star, DollarSign } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useToast } from '@/components/ui/use-toast';
 import ChatLauncher from './care-chat/ChatLauncher';
+import BookingModal from './booking-modal';
 
 interface Professional {
   id: string;
@@ -18,6 +19,7 @@ interface Professional {
   rating: number;
   photo_url: string;
   contact_email: string;
+  price_per_session: number;
 }
 
 interface ProfessionalListProps {
@@ -28,6 +30,8 @@ interface ProfessionalListProps {
 export default function ProfessionalList({ category = "all", onBack }: ProfessionalListProps) {
   const [professionals, setProfessionals] = useState<Professional[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedProfessional, setSelectedProfessional] = useState<Professional | null>(null);
+  const [showBookingModal, setShowBookingModal] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -59,6 +63,16 @@ export default function ProfessionalList({ category = "all", onBack }: Professio
 
     fetchProfessionals();
   }, [category]);
+
+  const handleBookSession = (professional: Professional) => {
+    setSelectedProfessional(professional);
+    setShowBookingModal(true);
+  };
+
+  const handleBookingSuccess = () => {
+    setShowBookingModal(false);
+    setSelectedProfessional(null);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-900 dark:to-slate-800 p-6">
@@ -121,7 +135,18 @@ export default function ProfessionalList({ category = "all", onBack }: Professio
                     {professional.bio}
                   </p>
 
-                  <div className="pt-4">
+                  <div className="flex items-center gap-2 text-[#756657] dark:text-[#e6e2df] font-semibold">
+                    <DollarSign className="h-5 w-5" />
+                    <span>Rp {professional.price_per_session.toLocaleString()} / session</span>
+                  </div>
+
+                  <div className="flex gap-2">
+                    <Button
+                      onClick={() => handleBookSession(professional)}
+                      className="flex-1 bg-[#756657] hover:bg-[#756657]/90 text-white"
+                    >
+                      Book Session
+                    </Button>
                     <ChatLauncher
                       professionalId={professional.id}
                       professionalName={professional.title}
@@ -133,6 +158,20 @@ export default function ProfessionalList({ category = "all", onBack }: Professio
           </div>
         )}
       </div>
+
+      {/* Booking Modal */}
+      {selectedProfessional && (
+        <BookingModal
+          open={showBookingModal}
+          onClose={() => setShowBookingModal(false)}
+          professional={{
+            id: selectedProfessional.id,
+            full_name: selectedProfessional.title,
+            price_per_session: selectedProfessional.price_per_session,
+          }}
+          onSuccess={handleBookingSuccess}
+        />
+      )}
     </div>
   );
 }

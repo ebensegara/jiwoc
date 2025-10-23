@@ -14,10 +14,12 @@ import ProfessionalCare from '@/components/professional-care';
 import YogaStudio from '@/components/yoga-studio';
 import ArtTherapy from '@/components/art-therapy';
 import FloatingActionButton from '@/components/floating-action-button';
+import SubscriptionBanner from '@/components/subscription-banner';
 
 export default function Page() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -28,6 +30,7 @@ export default function Page() {
         router.replace('/landing');
       } else {
         setIsAuthenticated(true);
+        setUserId(session.user.id);
       }
     };
 
@@ -39,6 +42,7 @@ export default function Page() {
         router.replace('/landing');
       } else {
         setIsAuthenticated(true);
+        setUserId(session.user.id);
       }
     });
 
@@ -59,7 +63,12 @@ export default function Page() {
   const renderContent = () => {
     switch (activeTab) {
       case 'dashboard':
-        return <Dashboard onNavigate={setActiveTab} />;
+        return (
+          <div className="space-y-4">
+            <SubscriptionBanner userId={userId || undefined} />
+            <Dashboard onNavigate={setActiveTab} />
+          </div>
+        );
       case 'mood':
         return <MoodCheckin />;
       case 'chat':
@@ -77,7 +86,12 @@ export default function Page() {
       case 'art-therapy':
         return <ArtTherapy onNavigate={setActiveTab} />;
       default:
-        return <Dashboard onNavigate={setActiveTab} />;
+        return (
+          <div className="space-y-4">
+            <SubscriptionBanner userId={userId || undefined} />
+            <Dashboard onNavigate={setActiveTab} />
+          </div>
+        );
     }
   };
 
