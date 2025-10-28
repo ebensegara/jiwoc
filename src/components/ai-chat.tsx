@@ -124,28 +124,37 @@ export default function AIChat() {
       setInputValue("");
       setIsTyping(true);
 
-      // Call Supabase Edge Function proxy to avoid CORS
+      // Call n8n webhook via Supabase Edge Function
       try {
-        const { data, error } = await supabase.functions.invoke(
-          "supabase-functions-n8n-webhook-proxy",
+        console.log('Calling edge function with:', { message: userMessage, userId: user.id });
+        
+        const { data, error: functionError } = await supabase.functions.invoke(
+          'supabase-functions-n8n-webhook-proxy',
           {
             body: {
               message: userMessage,
               userId: user.id,
               timestamp: new Date().toISOString(),
             },
-          },
+          }
         );
 
-        if (error) throw error;
+        console.log('Edge function response:', data);
+        console.log('Edge function error:', functionError);
 
-        // Extract AI response from webhook - check multiple possible fields including 'output'
+        if (functionError) {
+          throw functionError;
+        }
+
+        // Extract AI response from webhook - FIXED to match edge function response format
         const aiResponse =
-          data.output ||
-          data.response ||
-          data.message ||
-          data.advice ||
+          data?.message ||
+          data?.output ||
+          data?.response ||
+          data?.advice ||
           "Thank you for sharing. I'm here to support you on your mental health journey.";
+
+        console.log('AI response extracted:', aiResponse);
 
         // Save AI response to database
         const { error: aiError } = await supabase.from("chat_messages").insert([
@@ -158,6 +167,11 @@ export default function AIChat() {
 
         if (aiError) throw aiError;
       } catch (webhookError: any) {
+        console.error('Webhook error details:', webhookError);
+
+        console.error('Error message:', webhookError.message);
+        console.error('Error stack:', webhookError.stack);
+        
         // Fallback to local response if webhook fails
         const fallbackResponse =
           "I'm here to listen and support you. Could you tell me more about what's on your mind?";

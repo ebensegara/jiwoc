@@ -10,6 +10,7 @@ export default function Chatbot() {
   ]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
 
   const handleSendMessage = async () => {
     if (!inputValue.trim() || isLoading) return;
@@ -18,36 +19,53 @@ export default function Chatbot() {
     
     // Add user message to chat
     setMessages(prev => [...prev, { id: Date.now(), text: userMessage, sender: 'user' }]);
-    setInputValue('');
-    setIsLoading(true);
+    setInputValue("");
+    setIsTyping(true);
 
+    // Call n8n webhook via Supabase Edge Function
     try {
-      // Send POST request to n8n webhook
-      const response = await fetch('https://dindon.app.n8n.cloud/webhook/jiwohook', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          message: userMessage,
-          timestamp: new Date().toISOString(),
-        }),
-      });
+      console.log('Calling edge function with:', { message: userMessage, userId: user.id });
+      
+      const { data, error: functionError } = await supabase.functions.invoke(
+        'supabase-functions-n8n-webhook-proxy',
+        {
+          body: {
+            message: userMessage,
+            userId: user.id,
+            timestamp: new Date().toISOString(),
+          },
+        }
+      );
 
-      if (!response.ok) {
-        throw new Error('Failed to get response from AI');
+      console.log('Edge function response:', data);
+      console.log('Edge function error:', functionError);
+
+      if (functionError) {
+        throw functionError;
       }
 
-      const data = await response.json();
-      
-      // Extract AI response - check multiple possible fields
-      const aiResponse = data.output || data.response || data.message || data.advice || 
-        'Terima kasih telah berbagi. Saya di sini untuk mendukung Anda.';
+      // Extract AI response from webhook
+      const aiResponse =
+        data?.output ||
+        data?.response ||
+        data?.message ||
+        data?.advice ||
+        "Thank you for sharing. I'm here to support you on your mental health journey.";
 
-      // Add AI response to chat
-      setMessages(prev => [...prev, { id: Date.now() + 1, text: aiResponse, sender: 'ai' }]);
-    } catch (error) {
-      console.error('Error sending message:', error);
+      console.log('AI response extracted:', aiResponse);
+
+      // Save AI response to database
+      const { error: aiError } = await supabase.from("ai_chats").insert([
+        {
+          user_id: user.id,
+          message: aiResponse,
+          sender: "ai",
+        },
+      ]);
+
+      if (aiError) throw aiError;
+    } catch (webhookError: any) {
+      console.error('Webhook error details:', webhookError);
       // Fallback response
       setMessages(prev => [...prev, { 
         id: Date.now() + 1, 
@@ -56,6 +74,7 @@ export default function Chatbot() {
       }]);
     } finally {
       setIsLoading(false);
+      setIsTyping(false);
     }
   };
 
