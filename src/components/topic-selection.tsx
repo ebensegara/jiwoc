@@ -29,7 +29,7 @@ const topics = [
     icon: AlertTriangle,
     color: "bg-[#756657]/10 border-[#756657]/30",
     iconColor: "text-[#0f0e0d]",
-    webhookUrl: "https://dindon.app.n8n.cloud/webhook-test/anxiety",
+    webhookUrl: "https://dindon.app.n8n.cloud/webhook/anxiety",
   },
   {
     id: "motivation",
@@ -47,7 +47,7 @@ const topics = [
     color:
       "bg-emerald-100 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800",
     iconColor: "text-emerald-600 dark:text-emerald-400",
-    webhookUrl: "https://jiwoai.app.n8n.cloud/webhook/confidence",
+    webhookUrl: "https://dindon.app.n8n.cloud/webhook/jiwohook",
   },
   {
     id: "sleep",
@@ -56,7 +56,7 @@ const topics = [
     color:
       "bg-indigo-100 dark:bg-indigo-900/20 border-indigo-200 dark:border-indigo-800",
     iconColor: "text-indigo-600 dark:text-indigo-400",
-    webhookUrl: "https://dindon.app.n8n.cloud/webhook-test/sleep",
+    webhookUrl: "https://dindon.app.n8n.cloud/webhook/sleep",
   },
   {
     id: "depression",
@@ -65,7 +65,7 @@ const topics = [
     color:
       "bg-slate-100 dark:bg-slate-900/20 border-slate-200 dark:border-slate-800",
     iconColor: "text-slate-600 dark:text-slate-400",
-    webhookUrl: "https://jiwoai.app.n8n.cloud/webhook/depression",
+    webhookUrl: "https://dindon.app.n8n.cloud/webhook/jiwohook",
   },
   {
     id: "workstress",
@@ -74,7 +74,7 @@ const topics = [
     color:
       "bg-orange-100 dark:bg-orange-900/20 border-orange-200 dark:border-orange-800",
     iconColor: "text-orange-600 dark:text-orange-400",
-    webhookUrl: "https://jiwoai.app.n8n.cloud/webhook/workstress",
+    webhookUrl: "https://dindon.app.n8n.cloud/webhook/jiwohook",
   },
   {
     id: "relationship",
@@ -83,7 +83,7 @@ const topics = [
     color:
       "bg-pink-100 dark:bg-pink-900/20 border-pink-200 dark:border-pink-800",
     iconColor: "text-pink-600 dark:text-pink-400",
-    webhookUrl: "https://jiwoai.app.n8n.cloud/webhook/relationship",
+    webhookUrl: "https://dindon.app.n8n.cloud/webhook/jiwohook",
   },
   {
     id: "examstress",
@@ -92,7 +92,7 @@ const topics = [
     color:
       "bg-blue-100 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800",
     iconColor: "text-blue-600 dark:text-blue-400",
-    webhookUrl: "https://jiwoai.app.n8n.cloud/webhook/examstress",
+    webhookUrl: "https://dindon.app.n8n.cloud/webhook/jiwohook",
   },
   {
     id: "pregnancy",
@@ -101,7 +101,7 @@ const topics = [
     color:
       "bg-purple-100 dark:bg-purple-900/20 border-purple-200 dark:border-purple-800",
     iconColor: "text-purple-600 dark:text-purple-400",
-    webhookUrl: "https://jiwoai.app.n8n.cloud/webhook/pregnancy",
+    webhookUrl: "https://dindon.app.n8n.cloud/webhook/jiwohook",
   },
   {
     id: "loss",
@@ -110,7 +110,7 @@ const topics = [
     color:
       "bg-gray-100 dark:bg-gray-900/20 border-gray-200 dark:border-gray-800",
     iconColor: "text-gray-600 dark:text-gray-400",
-    webhookUrl: "https://jiwoai.app.n8n.cloud/webhook/loss",
+    webhookUrl: "https://dindon.app.n8n.cloud/webhook/jiwohook",
   },
   {
     id: "lowenergy",
@@ -119,7 +119,7 @@ const topics = [
     color:
       "bg-yellow-100 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800",
     iconColor: "text-yellow-600 dark:text-yellow-400",
-    webhookUrl: "https://jiwoai.app.n8n.cloud/webhook/lowenergy",
+    webhookUrl: "https://dindon.app.n8n.cloud/webhook/jiwohook",
   },
   {
     id: "selfesteem",
@@ -127,7 +127,7 @@ const topics = [
     icon: Heart,
     color: "bg-red-100 dark:bg-red-900/20 border-red-200 dark:border-red-800",
     iconColor: "text-red-600 dark:text-red-400",
-    webhookUrl: "https://jiwoai.app.n8n.cloud/webhook/selfesteem",
+    webhookUrl: "https://dindon.app.n8n.cloud/webhook/jiwohook",
   },
   {
     id: "loneliness",
@@ -136,7 +136,7 @@ const topics = [
     color:
       "bg-cyan-100 dark:bg-cyan-900/20 border-cyan-200 dark:border-cyan-800",
     iconColor: "text-cyan-600 dark:text-cyan-400",
-    webhookUrl: "https://jiwoai.app.n8n.cloud/webhook/loneliness",
+    webhookUrl: "https://dindon.app.n8n.cloud/webhook/jiwohook",
   },
   {
     id: "trauma",
@@ -145,7 +145,7 @@ const topics = [
     color:
       "bg-violet-100 dark:bg-violet-900/20 border-violet-200 dark:border-violet-800",
     iconColor: "text-violet-600 dark:text-violet-400",
-    webhookUrl: "https://jiwoai.app.n8n.cloud/webhook/trauma",
+    webhookUrl: "https://dindon.app.n8n.cloud/webhook/jiwohook",
   },
 ];
 
