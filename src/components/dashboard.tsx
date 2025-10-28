@@ -1,12 +1,22 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { MessageCircle, BookOpen, Heart, Users, ArrowRight, Bell, ClipboardList, TrendingUp, LogOut } from 'lucide-react';
-import { supabase } from '@/lib/supabase';
-import { useRouter } from 'next/navigation';
-import { useToast } from '@/components/ui/use-toast';
+import { useState, useEffect } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import {
+  MessageCircle,
+  BookOpen,
+  Heart,
+  Users,
+  ArrowRight,
+  Bell,
+  ClipboardList,
+  TrendingUp,
+  LogOut,
+} from "lucide-react";
+import { supabase } from "@/lib/supabase";
+import { useRouter } from "next/navigation";
+import { useToast } from "@/components/ui/use-toast";
 
 interface DashboardProps {
   onNavigate: (tab: string) => void;
@@ -22,60 +32,68 @@ interface DashboardStats {
 
 const features = [
   {
-    id: 'chat',
-    title: 'AI Companion',
-    description: 'Chat for instant support and guidance.',
+    id: "chat",
+    title: "AI Companion",
+    description: "Chat for instant support and guidance.",
     icon: MessageCircle,
-    image: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=400&q=80',
+    image:
+      "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=400&q=80",
   },
   {
-    id: 'journal',
-    title: 'Journal',
-    description: 'Reflect on your thoughts and feelings.',
+    id: "journal",
+    title: "Journal",
+    description: "Reflect on your thoughts and feelings.",
     icon: BookOpen,
-    image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&q=80',
+    image:
+      "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&q=80",
   },
   {
-    id: 'mood',
-    title: 'Mood Tracker',
-    description: 'Identify patterns in your emotional well-being.',
+    id: "mood",
+    title: "Mood Tracker",
+    description: "Identify patterns in your emotional well-being.",
     icon: Heart,
-    image: 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&q=80',
+    image:
+      "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&q=80",
   },
   {
-    id: 'screening',
-    title: 'Self Screening',
-    description: 'Take a quick assessment of your mental health.',
+    id: "screening",
+    title: "Self Screening",
+    description: "Take a quick assessment of your mental health.",
     icon: ClipboardList,
-    image: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=400&q=80',
+    image:
+      "https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=400&q=80",
   },
   {
-    id: 'insights',
-    title: 'Weekly Insights',
-    description: 'View your personalized mental health analytics.',
+    id: "insights",
+    title: "Weekly Insights",
+    description: "View your personalized mental health analytics.",
     icon: TrendingUp,
-    image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&q=80',
+    image:
+      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&q=80",
   },
   {
-    id: 'professionals',
-    title: 'Professional Care',
-    description: 'Get personalized professional recommendations.',
+    id: "professionals",
+    title: "Professional Care",
+    description: "Get personalized professional recommendations.",
     icon: Users,
-    image: 'https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=400&q=80',
+    image:
+      "https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=400&q=80",
   },
   {
-    id: 'yoga-studio',
-    title: 'Yoga Studio',
-    description: 'Find your flow with guided yoga practices.',
+    id: "yoga-studio",
+    title: "Yoga Studio",
+    description: "Find your flow with guided yoga practices.",
     icon: Heart,
-    image: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400&q=80',
+    image:
+      "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400&q=80",
   },
   {
-    id: 'art-therapy',
-    title: 'Art Therapy',
-    description: 'Express yourself through creative healing.',
+    id: "art-therapy",
+    title: "Art Therapy",
+    description: "Express yourself through creative healing.",
     icon: Heart,
-    image: 'https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=400&q=80',
+    image:
+      "https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=400&q=80",
   },
 ];
 
@@ -86,10 +104,10 @@ export default function Dashboard({ onNavigate }: DashboardProps) {
     totalMoods: 0,
     totalJournals: 0,
     averageMood: 0,
-    recentMood: 'Neutral',
+    recentMood: "Neutral",
     weeklyProgress: 0,
   });
-  const [userName, setUserName] = useState('');
+  const [userName, setUserName] = useState("");
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -98,42 +116,47 @@ export default function Dashboard({ onNavigate }: DashboardProps) {
 
   const fetchDashboardData = async () => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (!user) return;
 
       // Fetch user profile
       const { data: profile } = await supabase
-        .from('users')
-        .select('full_name')
-        .eq('id', user.id)
+        .from("users")
+        .select("full_name")
+        .eq("id", user.id)
         .single();
 
       if (profile) {
-        setUserName(profile.full_name || 'Friend');
+        setUserName(profile.full_name || "Friend");
       }
 
       // Fetch mood stats
       const { data: moods } = await supabase
-        .from('moods')
-        .select('mood_value, mood_label, created_at')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false });
+        .from("moods")
+        .select("mood_value, mood_label, created_at")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false });
 
       // Fetch journal count
       const { count: journalCount } = await supabase
-        .from('journals')
-        .select('*', { count: 'exact', head: true })
-        .eq('user_id', user.id);
+        .from("journals")
+        .select("*", { count: "exact", head: true })
+        .eq("user_id", user.id);
 
       // Calculate stats
       if (moods && moods.length > 0) {
-        const avgMood = moods.reduce((sum, m) => sum + m.mood_value, 0) / moods.length;
+        const avgMood =
+          moods.reduce((sum, m) => sum + m.mood_value, 0) / moods.length;
         const recentMood = moods[0].mood_label;
-        
+
         // Calculate weekly progress (last 7 days)
         const weekAgo = new Date();
         weekAgo.setDate(weekAgo.getDate() - 7);
-        const weeklyMoods = moods.filter(m => new Date(m.created_at) >= weekAgo);
+        const weeklyMoods = moods.filter(
+          (m) => new Date(m.created_at) >= weekAgo,
+        );
         const weeklyProgress = weeklyMoods.length;
 
         setStats({
@@ -146,9 +169,9 @@ export default function Dashboard({ onNavigate }: DashboardProps) {
       }
     } catch (error: any) {
       toast({
-        title: 'Error',
-        description: error.message || 'Failed to fetch dashboard data',
-        variant: 'destructive',
+        title: "Error",
+        description: error.message || "Failed to fetch dashboard data",
+        variant: "destructive",
       });
     } finally {
       setIsLoading(false);
@@ -159,13 +182,13 @@ export default function Dashboard({ onNavigate }: DashboardProps) {
     try {
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
-      
+
       toast({
         title: "Signed out",
         description: "You've been successfully signed out.",
       });
-      
-      router.push('/landing');
+
+      router.push("/landing");
     } catch (error: any) {
       toast({
         title: "Error",
@@ -185,49 +208,56 @@ export default function Dashboard({ onNavigate }: DashboardProps) {
               <div className="h-8 w-8 bg-primary rounded-lg flex items-center justify-center">
                 <Heart className="h-5 w-5 text-white" />
               </div>
-              <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Jiwo.AI</h1>
+              <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
+                Jiwo.AI
+              </h1>
             </div>
-            
+
             <nav className="hidden md:flex items-center gap-8">
-              <button 
-                onClick={() => onNavigate('dashboard')}
+              <button
+                onClick={() => onNavigate("dashboard")}
                 className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-primary transition-colors"
               >
                 Home
               </button>
-              <button 
-                onClick={() => onNavigate('chat')}
+              <button
+                onClick={() => onNavigate("chat")}
                 className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-primary transition-colors"
               >
                 AI Companion
               </button>
-              <button 
-                onClick={() => onNavigate('journal')}
-                className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-primary transition-colors"
+              <button
+                onClick={() => onNavigate("journal")}
+                className="text-sm font-medium text-[#CB997E] dark:text-[#CB997E] hover:text-[#CB997E]/80 transition-colors"
               >
                 Journal
               </button>
-              <button 
-                onClick={() => onNavigate('mood')}
+              <button
+                onClick={() => onNavigate("mood")}
                 className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-primary transition-colors"
               >
                 Mood Tracker
               </button>
-              <a className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-primary transition-colors" href="#">
+              <a
+                className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-primary transition-colors"
+                href="#"
+              >
                 Professionals
               </a>
             </nav>
-            
+
             <div className="flex items-center gap-4">
               <button className="p-2 rounded-full text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors">
                 <Bell className="h-6 w-6" />
               </button>
-              <button 
+              <button
                 onClick={handleSignOut}
                 className="flex items-center gap-2 px-4 py-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-red-100 dark:hover:bg-red-900/20 hover:text-red-600 dark:hover:text-red-400 transition-colors"
               >
                 <LogOut className="h-5 w-5" />
-                <span className="hidden sm:inline text-sm font-medium">Sign Out</span>
+                <span className="hidden sm:inline text-sm font-medium">
+                  Sign Out
+                </span>
               </button>
             </div>
           </div>
@@ -241,7 +271,7 @@ export default function Dashboard({ onNavigate }: DashboardProps) {
             {/* Hero Section */}
             <div className="text-center mb-12">
               <p className="text-sm font-medium text-primary uppercase tracking-widest">
-                Welcome Back{userName ? `, ${userName}` : ''}
+                Welcome Back{userName ? `, ${userName}` : ""}
               </p>
               <h2 className="mt-2 text-4xl sm:text-5xl font-extrabold text-gray-900 dark:text-white tracking-tight">
                 Your Mental Health Dashboard
@@ -253,26 +283,42 @@ export default function Dashboard({ onNavigate }: DashboardProps) {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
                 <Card className="bg-white/20 dark:bg-black/20 backdrop-blur-lg border-white/20">
                   <CardContent className="p-4 text-center">
-                    <div className="text-2xl font-bold text-primary">{stats.totalMoods}</div>
-                    <div className="text-xs text-muted-foreground">Mood Entries</div>
+                    <div className="text-2xl font-bold text-primary">
+                      {stats.totalMoods}
+                    </div>
+                    <div className="text-xs text-muted-foreground">
+                      Mood Entries
+                    </div>
                   </CardContent>
                 </Card>
                 <Card className="bg-white/20 dark:bg-black/20 backdrop-blur-lg border-white/20">
                   <CardContent className="p-4 text-center">
-                    <div className="text-2xl font-bold text-primary">{stats.totalJournals}</div>
-                    <div className="text-xs text-muted-foreground">Journal Entries</div>
+                    <div className="text-2xl font-bold text-primary">
+                      {stats.totalJournals}
+                    </div>
+                    <div className="text-xs text-muted-foreground">
+                      Journal Entries
+                    </div>
                   </CardContent>
                 </Card>
                 <Card className="bg-white/20 dark:bg-black/20 backdrop-blur-lg border-white/20">
                   <CardContent className="p-4 text-center">
-                    <div className="text-2xl font-bold text-primary">{stats.averageMood.toFixed(1)}</div>
-                    <div className="text-xs text-muted-foreground">Avg Mood</div>
+                    <div className="text-2xl font-bold text-primary">
+                      {stats.averageMood.toFixed(1)}
+                    </div>
+                    <div className="text-xs text-muted-foreground">
+                      Avg Mood
+                    </div>
                   </CardContent>
                 </Card>
                 <Card className="bg-white/20 dark:bg-black/20 backdrop-blur-lg border-white/20">
                   <CardContent className="p-4 text-center">
-                    <div className="text-2xl font-bold text-primary">{stats.weeklyProgress}</div>
-                    <div className="text-xs text-muted-foreground">This Week</div>
+                    <div className="text-2xl font-bold text-primary">
+                      {stats.weeklyProgress}
+                    </div>
+                    <div className="text-xs text-muted-foreground">
+                      This Week
+                    </div>
                   </CardContent>
                 </Card>
               </div>
@@ -283,7 +329,7 @@ export default function Dashboard({ onNavigate }: DashboardProps) {
               {features.map((feature) => {
                 const Icon = feature.icon;
                 return (
-                  <Card 
+                  <Card
                     key={feature.id}
                     className="bg-white/20 dark:bg-black/20 backdrop-blur-lg border-white/20 shadow-lg overflow-hidden group transition-all duration-300 hover:scale-105 cursor-pointer"
                   >
@@ -297,24 +343,25 @@ export default function Dashboard({ onNavigate }: DashboardProps) {
                             {feature.description}
                           </p>
                         </div>
-                        <div 
+                        <div
                           className="w-24 h-24 rounded-lg bg-cover bg-center ml-6"
                           style={{ backgroundImage: `url("${feature.image}")` }}
                         />
                       </div>
-                      <Button 
+                      <Button
                         onClick={() => onNavigate(feature.id)}
                         className="mt-6 w-full bg-primary text-primary-foreground font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-primary/90 transition-all duration-300 flex items-center justify-center gap-2"
                       >
                         <span>
-                          {feature.id === 'chat' && 'Start Chat'}
-                          {feature.id === 'journal' && 'Open Journal'}
-                          {feature.id === 'mood' && 'Track Mood'}
-                          {feature.id === 'screening' && 'Take Assessment'}
-                          {feature.id === 'insights' && 'View Insights'}
-                          {feature.id === 'professionals' && 'View Recommendations'}
-                          {feature.id === 'yoga-studio' && 'Start Practice'}
-                          {feature.id === 'art-therapy' && 'Begin Creating'}
+                          {feature.id === "chat" && "Start Chat"}
+                          {feature.id === "journal" && "Open Journal"}
+                          {feature.id === "mood" && "Track Mood"}
+                          {feature.id === "screening" && "Take Assessment"}
+                          {feature.id === "insights" && "View Insights"}
+                          {feature.id === "professionals" &&
+                            "View Recommendations"}
+                          {feature.id === "yoga-studio" && "Start Practice"}
+                          {feature.id === "art-therapy" && "Begin Creating"}
                         </span>
                         <ArrowRight className="h-5 w-5" />
                       </Button>

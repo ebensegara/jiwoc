@@ -15,9 +15,12 @@ import YogaStudio from '@/components/yoga-studio';
 import ArtTherapy from '@/components/art-therapy';
 import FloatingActionButton from '@/components/floating-action-button';
 import SubscriptionBanner from '@/components/subscription-banner';
+import TopicSelection from '@/components/topic-selection';
 
 export default function Page() {
   const [activeTab, setActiveTab] = useState('dashboard');
+  const [showTopicSelection, setShowTopicSelection] = useState(false);
+  const [selectedWebhookUrl, setSelectedWebhookUrl] = useState<string | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
   const router = useRouter();
@@ -49,6 +52,20 @@ export default function Page() {
     return () => subscription.unsubscribe();
   }, [router]);
 
+  const handleNavigateToChat = (tab: string) => {
+    if (tab === 'chat') {
+      setShowTopicSelection(true);
+      setActiveTab('chat');
+    } else {
+      setActiveTab(tab);
+    }
+  };
+
+  const handleTopicSelect = (topic: string, webhookUrl: string) => {
+    setSelectedWebhookUrl(webhookUrl);
+    setShowTopicSelection(false);
+  };
+
   if (isAuthenticated === null) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -61,18 +78,23 @@ export default function Page() {
   }
 
   const renderContent = () => {
+    // Show topic selection when navigating to chat
+    if (activeTab === 'chat' && showTopicSelection) {
+      return <TopicSelection onTopicSelect={handleTopicSelect} />;
+    }
+
     switch (activeTab) {
       case 'dashboard':
         return (
           <div className="space-y-4">
             <SubscriptionBanner userId={userId || undefined} />
-            <Dashboard onNavigate={setActiveTab} />
+            <Dashboard onNavigate={handleNavigateToChat} />
           </div>
         );
       case 'mood':
         return <MoodCheckin />;
       case 'chat':
-        return <AIChat />;
+        return <AIChat webhookUrl={selectedWebhookUrl} />;
       case 'journal':
         return <Journal />;
       case 'screening':
@@ -89,14 +111,14 @@ export default function Page() {
         return (
           <div className="space-y-4">
             <SubscriptionBanner userId={userId || undefined} />
-            <Dashboard onNavigate={setActiveTab} />
+            <Dashboard onNavigate={handleNavigateToChat} />
           </div>
         );
     }
   };
 
-  // For dashboard, screening, insights, professionals, yoga-studio, and art-therapy, render full screen without navigation
-  if (activeTab === 'dashboard' || activeTab === 'screening' || activeTab === 'insights' || activeTab === 'professionals' || activeTab === 'yoga-studio' || activeTab === 'art-therapy') {
+  // For dashboard, screening, insights, professionals, yoga-studio, art-therapy, and topic selection, render full screen
+  if (activeTab === 'dashboard' || activeTab === 'screening' || activeTab === 'insights' || activeTab === 'professionals' || activeTab === 'yoga-studio' || activeTab === 'art-therapy' || showTopicSelection) {
     return (
       <div className="min-h-screen bg-background">
         {renderContent()}
@@ -108,10 +130,10 @@ export default function Page() {
   return (
     <div className="min-h-screen bg-background">
       {/* Desktop Sidebar */}
-      <DesktopSidebar activeTab={activeTab} onTabChange={setActiveTab} />
+      <DesktopSidebar activeTab={activeTab} onTabChange={handleNavigateToChat} />
       
       {/* Mobile Header */}
-      <MobileHeader activeTab={activeTab} onTabChange={setActiveTab} />
+      <MobileHeader activeTab={activeTab} onTabChange={handleNavigateToChat} />
       
       {/* Main Content */}
       <div className="md:pl-64">
@@ -123,11 +145,11 @@ export default function Page() {
       </div>
       
       {/* Mobile Navigation */}
-      <MobileNavigation activeTab={activeTab} onTabChange={setActiveTab} />
+      <MobileNavigation activeTab={activeTab} onTabChange={handleNavigateToChat} />
       
       {/* Floating Action Button */}
       <FloatingActionButton 
-        onClick={() => setActiveTab('chat')}
+        onClick={() => handleNavigateToChat('chat')}
         isVisible={activeTab !== 'chat'}
       />
     </div>

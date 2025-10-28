@@ -27,7 +27,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-export default function LandingPage() {
+export default function LandingPageOld() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#f8f6f3] via-white to-[#f1ede8] dark:from-[#1b1918] dark:via-[#1f1d1a] dark:to-[#1b1918]">
       <Navbar />

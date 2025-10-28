@@ -17,7 +17,11 @@ interface Message {
   created_at: string;
 }
 
-export default function AIChat() {
+interface AIChatProps {
+  webhookUrl?: string | null;
+}
+
+export default function AIChat({ webhookUrl }: AIChatProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState("");
   const [isTyping, setIsTyping] = useState(false);
@@ -124,35 +128,58 @@ export default function AIChat() {
       setInputValue("");
       setIsTyping(true);
 
-      // Call n8n webhook via Supabase Edge Function
+      // Call webhook - use the provided webhookUrl or fallback to edge function
       try {
-        console.log('Calling edge function with:', { message: userMessage, userId: user.id });
-        
-        const { data, error: functionError } = await supabase.functions.invoke(
-          'supabase-functions-n8n-webhook-proxy',
-          {
-            body: {
+        let aiResponse;
+
+        if (webhookUrl) {
+          // Direct webhook call with topic-specific URL
+          console.log('Calling topic-specific webhook:', webhookUrl);
+          
+          const webhookResponse = await fetch(webhookUrl, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
               message: userMessage,
               userId: user.id,
               timestamp: new Date().toISOString(),
-            },
+            }),
+          });
+
+          if (!webhookResponse.ok) {
+            throw new Error('Webhook call failed');
           }
-        );
 
-        console.log('Edge function response:', data);
-        console.log('Edge function error:', functionError);
+          const webhookData = await webhookResponse.json();
+          aiResponse = webhookData?.message || webhookData?.output || webhookData?.response || webhookData?.advice;
+        } else {
+          // Fallback to edge function
+          console.log('Calling edge function with:', { message: userMessage, userId: user.id });
+          
+          const { data, error: functionError } = await supabase.functions.invoke(
+            'supabase-functions-n8n-webhook-proxy',
+            {
+              body: {
+                message: userMessage,
+                userId: user.id,
+                timestamp: new Date().toISOString(),
+              },
+            }
+          );
 
-        if (functionError) {
-          throw functionError;
+          if (functionError) {
+            throw functionError;
+          }
+
+          aiResponse = data?.message || data?.output || data?.response || data?.advice;
         }
 
-        // Extract AI response from webhook - FIXED to match edge function response format
-        const aiResponse =
-          data?.message ||
-          data?.output ||
-          data?.response ||
-          data?.advice ||
-          "Thank you for sharing. I'm here to support you on your mental health journey.";
+        // Use fallback if no response
+        if (!aiResponse) {
+          aiResponse = "Thank you for sharing. I'm here to support you on your mental health journey.";
+        }
 
         console.log('AI response extracted:', aiResponse);
 
@@ -168,9 +195,6 @@ export default function AIChat() {
         if (aiError) throw aiError;
       } catch (webhookError: any) {
         console.error('Webhook error details:', webhookError);
-
-        console.error('Error message:', webhookError.message);
-        console.error('Error stack:', webhookError.stack);
         
         // Fallback to local response if webhook fails
         const fallbackResponse =
