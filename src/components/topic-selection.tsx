@@ -29,7 +29,7 @@ const topics = [
     icon: AlertTriangle,
     color: "bg-[#756657]/10 border-[#756657]/30",
     iconColor: "text-[#0f0e0d]",
-    webhookUrl: "https://dindon.app.n8n.cloud/webhook/anxiety",
+    webhookUrl: "https://dindon.app.n8n.cloud/webhook/sleep",
   },
   {
     id: "motivation",
@@ -38,7 +38,7 @@ const topics = [
     color:
       "bg-amber-100 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800",
     iconColor: "text-amber-600 dark:text-amber-400",
-    webhookUrl: "https://dindon.app.n8n.cloud/webhook/jiwohook",
+    webhookUrl: "https://dindon.app.n8n.cloud/webhook/sleep",
   },
   {
     id: "confidence",
@@ -47,7 +47,7 @@ const topics = [
     color:
       "bg-emerald-100 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800",
     iconColor: "text-emerald-600 dark:text-emerald-400",
-    webhookUrl: "https://dindon.app.n8n.cloud/webhook/jiwohook",
+    webhookUrl: "https://dindon.app.n8n.cloud/webhook/sleep",
   },
   {
     id: "sleep",
