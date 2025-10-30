@@ -64,7 +64,7 @@ export default function LandingPage() {
             Hybrid AI + Human Support
             <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#756657] to-[#a08875]">
-              Sahabat Jiwa Setiap Saat
+              Teman CurHat Setiap Saat
             </span>
           </h1>
 
@@ -103,70 +103,70 @@ export default function LandingPage() {
       <section className="py-20 bg-white dark:bg-[#1b1918]">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
-              Sahabat Jiwa , Setiap Hari
+            <h2 className="text-4xl md:text-5xl font-bold text-[#fa6355] mb-6">
+              Teman Curhat Setiap Saat
             </h2>
             <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-              Kami percaya setiap orang berhak mendapatkan dukungan kesehatan
-              mental yang cepat, mudah, terjangkau, dan privat
+              Setiap orang berhak mendapatkan dukungan kesehatan mental yang
+              cepat, mudah, terjangkau, dan privat
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <Card className="border-[#756657]/20 hover:border-[#756657]/40 transition-colors">
+            <Card className="bg-[#CB997E] border-[#756657]/20 hover:border-[#756657]/40 transition-colors">
               <CardHeader className="text-center">
                 <div className="w-16 h-16 bg-gradient-to-br from-[#756657] to-[#756657]/80 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Zap className="w-8 h-8 text-white" />
                 </div>
-                <CardTitle className="text-[#756657]">Cepat</CardTitle>
+                <CardTitle className="text-white">Cepat</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-gray-600 dark:text-gray-300 text-center">
+                <p className="text-white/90 text-center">
                   Akses instan tanpa antrian. Pendamping AI siap membantu dalam
                   hitungan detik.
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="border-[#756657]/20 hover:border-[#756657]/40 transition-colors">
+            <Card className="bg-[#B7B7A4] border-[#756657]/20 hover:border-[#756657]/40 transition-colors">
               <CardHeader className="text-center">
                 <div className="w-16 h-16 bg-gradient-to-br from-[#756657] to-[#756657]/80 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Smartphone className="w-8 h-8 text-white" />
+                  <Zap className="w-8 h-8 text-white" />
                 </div>
-                <CardTitle className="text-[#756657]">Mudah</CardTitle>
+                <CardTitle className="text-white">Mudah</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-gray-600 dark:text-gray-300 text-center">
+                <p className="text-white/90 text-center">
                   Interface sederhana, dapat diakses dari mana saja dengan
                   smartphone atau komputer.
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="border-[#756657]/20 hover:border-[#756657]/40 transition-colors">
+            <Card className="bg-[#A5A58D] border-[#756657]/20 hover:border-[#756657]/40 transition-colors">
               <CardHeader className="text-center">
                 <div className="w-16 h-16 bg-gradient-to-br from-[#756657] to-[#756657]/80 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Heart className="w-8 h-8 text-white" />
+                  <Zap className="w-8 h-8 text-white" />
                 </div>
-                <CardTitle className="text-[#756657]">Terjangkau</CardTitle>
+                <CardTitle className="text-white">Terjangkau</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-gray-600 dark:text-gray-300 text-center">
+                <p className="text-white/90 text-center">
                   Biaya jauh lebih murah dibanding terapi tradisional. Mulai
                   gratis, lanjut dengan harga terjangkau.
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="border-[#756657]/20 hover:border-[#756657]/40 transition-colors">
+            <Card className="bg-[#6B705C] border-[#756657]/20 hover:border-[#756657]/40 transition-colors">
               <CardHeader className="text-center">
                 <div className="w-16 h-16 bg-gradient-to-br from-[#756657] to-[#756657]/80 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Lock className="w-8 h-8 text-white" />
+                  <Zap className="w-8 h-8 text-white" />
                 </div>
-                <CardTitle className="text-[#756657]">Privat</CardTitle>
+                <CardTitle className="text-white">Privat</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-gray-600 dark:text-gray-300 text-center">
+                <p className="text-white/90 text-center">
                   100% anonim dan rahasia. Data Anda terenkripsi dan tidak
                   dibagikan kepada siapapun.
                 </p>
@@ -180,8 +180,8 @@ export default function LandingPage() {
       <section className="py-20 bg-gradient-to-br from-[#f8f6f3] to-[#f1ede8] dark:from-[#1f1d1a] dark:to-[#1b1918]">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
-              Rasakan Pengalaman AI Life Coaching
+            <h2 className="text-4xl md:text-5xl font-bold text-[#fa6355] mb-6">
+              Ngobrol Dengan AI Jiwo
             </h2>
             <p className="text-xl text-gray-600 dark:text-gray-300">
               Lihat bagaimana AI kami membantu Anda dengan empati dan pemahaman
@@ -261,8 +261,8 @@ export default function LandingPage() {
       <section className="py-20 bg-white dark:bg-[#1b1918]">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
-              Mengapa Memilih Life Coaching AI Kami?
+            <h2 className="text-4xl md:text-5xl font-bold text-[#fa6355] mb-6">
+              Merawat Jiwa, Temukan Ketenangan
             </h2>
           </div>
 
