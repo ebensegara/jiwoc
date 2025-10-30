@@ -268,7 +268,7 @@ export default function LandingPage() {
 
           <div className="grid md:grid-cols-3 gap-8">
             <div className="text-center">
-              <div className="w-20 h-20 bg-gradient-to-br from-[#756657] to-[#756657]/80 rounded-full flex items-center justify-center mx-auto mb-6">
+              <div className="w-20 h-20 bg-gradient-to-br from-[#B7B7A4] to-[#B7B7A4]/80 rounded-full flex items-center justify-center mx-auto mb-6">
                 <Brain className="w-10 h-10 text-white" />
               </div>
               <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
@@ -281,7 +281,7 @@ export default function LandingPage() {
             </div>
 
             <div className="text-center">
-              <div className="w-20 h-20 bg-gradient-to-br from-[#756657] to-[#756657]/80 rounded-full flex items-center justify-center mx-auto mb-6">
+              <div className="w-20 h-20 bg-gradient-to-br from-[#A5A58D] to-[#A5A58D]/80 rounded-full flex items-center justify-center mx-auto mb-6">
                 <Shield className="w-10 h-10 text-white" />
               </div>
               <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
@@ -293,7 +293,7 @@ export default function LandingPage() {
             </div>
 
             <div className="text-center">
-              <div className="w-20 h-20 bg-gradient-to-br from-[#756657] to-[#756657]/80 rounded-full flex items-center justify-center mx-auto mb-6">
+              <div className="w-20 h-20 bg-gradient-to-br from-[#6B705C] to-[#6B705C]/80 rounded-full flex items-center justify-center mx-auto mb-6">
                 <TrendingUp className="w-10 h-10 text-white" />
               </div>
               <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
