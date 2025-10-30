@@ -81,7 +81,7 @@ const features = [
   },
   {
     id: "yoga-studio",
-    title: "Yoga Studio",
+    title: "Holistic Care",
     description: "Find your flow with guided yoga practices.",
     icon: Heart,
     image:
@@ -109,6 +109,18 @@ export default function Dashboard({ onNavigate }: DashboardProps) {
   });
   const [userName, setUserName] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+
+  // TAMBAHKAN DI SINI 👇
+  const featureColors: { [key: string]: string } = {
+    chat: "bg-[#CB997E] hover:bg-[#CB997E]/90",
+    journal: "bg-[#B7B7A4] hover:bg-[#B7B7A4]/90",
+    mood: "bg-[#6B705C] hover:bg-[#6B705C]/90",
+    screening: "bg-[#756657] hover:bg-[#756657]/90",
+    insights: "bg-blue-500 hover:bg-blue-600",
+    professionals: "bg-purple-500 hover:bg-purple-600",
+    "yoga-studio": "bg-green-500 hover:bg-green-600",
+    "art-therapy": "bg-pink-500 hover:bg-pink-600",
+  };
 
   useEffect(() => {
     fetchDashboardData();
@@ -350,7 +362,7 @@ export default function Dashboard({ onNavigate }: DashboardProps) {
                       </div>
                       <Button
                         onClick={() => onNavigate(feature.id)}
-                        className="mt-6 w-full bg-primary text-primary-foreground font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-primary/90 transition-all duration-300 flex items-center justify-center gap-2"
+                        className={`mt-6 w-full ${featureColors[feature.id] || "bg-primary hover:bg-primary/90"} text-white font-semibold py-3 px-6 rounded-lg shadow-md transition-all duration-300 flex items-center justify-center gap-2`}
                       >
                         <span>
                           {feature.id === "chat" && "Start Chat"}
