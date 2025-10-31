@@ -27,6 +27,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import FeaturesSection from "@/components/features-section";
+import HolisticCareSection from "@/components/holistic-care-section";
 
 export default function LandingPage() {
   return (
@@ -177,6 +178,9 @@ export default function LandingPage() {
 
       {/* Features Section */}
       <FeaturesSection />
+
+      {/* Holistic Care Section - NEW */}
+      <HolisticCareSection />
 
       {/* Interactive AI Chat Demo */}
       <section className="py-20 bg-gradient-to-br from-[#f8f6f3] to-[#f1ede8] dark:from-[#1f1d1a] dark:to-[#1b1918]">

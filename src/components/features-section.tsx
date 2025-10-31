@@ -3,44 +3,64 @@
 import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { MessageSquare, BookOpen, Heart, ClipboardList, TrendingUp, Users, ArrowRight } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  MessageSquare,
+  BookOpen,
+  Heart,
+  ClipboardList,
+  TrendingUp,
+  Users,
+  ArrowRight,
+} from "lucide-react";
 
 const features = [
   {
     icon: MessageSquare,
     title: "AI Chat",
-    description: "Ngobrol dengan AI Jiwo yang empatik, tersedia 24/7 untuk mendengarkan dan memberi dukungan.",
+    description:
+      "Ngobrol dengan AI Jiwo yang empatik, tersedia 24/7 untuk mendengarkan dan memberi dukungan.",
     color: "from-[#A3B18A] to-[#8a9a75]",
   },
   {
     icon: BookOpen,
     title: "Journal",
-    description: "Tulis perasaan dan pikiranmu dalam jurnal pribadi yang aman dan terenkripsi.",
+    description:
+      "Tulis perasaan dan pikiranmu dalam jurnal pribadi yang aman dan terenkripsi.",
     color: "from-[#A9D6E5] to-[#89b6c5]",
   },
   {
     icon: Heart,
     title: "Mood Tracking",
-    description: "Pantau suasana hatimu setiap hari dan temukan pola emosionalmu.",
+    description:
+      "Pantau suasana hatimu setiap hari dan temukan pola emosionalmu.",
     color: "from-[#F4A9A8] to-[#d48988]",
   },
   {
     icon: ClipboardList,
     title: "Self-Screening",
-    description: "Tes kesehatan mental yang valid untuk memahami kondisimu lebih baik.",
+    description:
+      "Tes kesehatan mental yang valid untuk memahami kondisimu lebih baik.",
     color: "from-[#A3B18A] to-[#8a9a75]",
   },
   {
     icon: TrendingUp,
     title: "Insights",
-    description: "Dapatkan wawasan mendalam tentang perjalanan kesehatan mentalmu.",
+    description:
+      "Dapatkan wawasan mendalam tentang perjalanan kesehatan mentalmu.",
     color: "from-[#A9D6E5] to-[#89b6c5]",
   },
   {
     icon: Users,
     title: "Professional Marketplace",
-    description: "Terhubung dengan psikolog dan terapis profesional yang tepat untukmu.",
+    description:
+      "Terhubung dengan psikolog dan terapis profesional yang tepat untukmu.",
     color: "from-[#F4A9A8] to-[#d48988]",
   },
 ];
@@ -58,11 +78,12 @@ export default function FeaturesSection() {
           transition={{ duration: 0.8 }}
           className="text-center mb-16"
         >
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-800 mb-4">
+          <h2 className="text-4xl md:text-5xl font-bold text-[#e6542d] mb-4">
             Fitur Lengkap untuk Kesejahteraanmu
           </h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Semua yang kamu butuhkan untuk merawat kesehatan mental dalam satu platform
+            Semua yang kamu butuhkan untuk merawat kesehatan mental dalam satu
+            platform
           </p>
         </motion.div>
 
@@ -76,10 +97,14 @@ export default function FeaturesSection() {
             >
               <Card className="h-full border-none shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 bg-white">
                 <CardHeader>
-                  <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${feature.color} flex items-center justify-center mb-4`}>
+                  <div
+                    className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${feature.color} flex items-center justify-center mb-4`}
+                  >
                     <feature.icon className="w-7 h-7 text-white" />
                   </div>
-                  <CardTitle className="text-2xl text-gray-800">{feature.title}</CardTitle>
+                  <CardTitle className="text-2xl text-gray-800">
+                    {feature.title}
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <CardDescription className="text-base text-gray-600 leading-relaxed">
