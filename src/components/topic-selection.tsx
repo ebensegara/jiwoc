@@ -29,7 +29,7 @@ const topics = [
     icon: AlertTriangle,
     color: "bg-[#756657]/10 border-[#756657]/30",
     iconColor: "text-[#0f0e0d]",
-    webhookUrl: "https://dindon.app.n8n.cloud/webhook/ngobrol",
+    webhookUrl: "https://dindon.app.n8n.cloud/webhook/mindfullnessx1",
   },
   {
     id: "motivation",
