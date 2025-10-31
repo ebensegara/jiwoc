@@ -69,8 +69,8 @@ export default function LandingPage() {
           </h1>
 
           <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto leading-relaxed opacity-90">
-            Teman digital untuk kesehatan mental dan penemuan diri. Kombinasi AI
-            cerdas dengan dukungan manusia yang hangat.
+            Teman digital sehari hari untuk kesehatan mental. Kombinasi AI
+            cerdas + akses kepada human professional.
           </p>
 
           {/* Benefits Grid */}

@@ -25,47 +25,47 @@ interface TopicSelectionProps {
 const topics = [
   {
     id: "anxiety",
-    title: "Anxiety",
+    title: "Teman Curhat",
     icon: AlertTriangle,
     color: "bg-[#756657]/10 border-[#756657]/30",
     iconColor: "text-[#0f0e0d]",
-    webhookUrl: "https://dindon.app.n8n.cloud/webhook/mindfullnessx1",
+    webhookUrl: "https://dindon.app.n8n.cloud/webhook/ngobrol",
   },
   {
     id: "motivation",
-    title: "Motivation",
+    title: "Midfullness",
     icon: Sparkles,
     color:
       "bg-amber-100 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800",
     iconColor: "text-amber-600 dark:text-amber-400",
-    webhookUrl: "https://dindon.app.n8n.cloud/webhook/sleep",
+    webhookUrl: "https://dindon.app.n8n.cloud/webhook/mindfullnessx1",
   },
   {
     id: "confidence",
-    title: "Confidence",
+    title: "Hubungan Sosial",
     icon: Smile,
     color:
       "bg-emerald-100 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800",
     iconColor: "text-emerald-600 dark:text-emerald-400",
-    webhookUrl: "https://dindon.app.n8n.cloud/webhook/sleep",
+    webhookUrl: "https://dindon.app.n8n.cloud/webhook/social",
   },
   {
     id: "sleep",
-    title: "Sleep",
+    title: "Produktifitas Kerja",
     icon: Moon,
     color:
       "bg-indigo-100 dark:bg-indigo-900/20 border-indigo-200 dark:border-indigo-800",
     iconColor: "text-indigo-600 dark:text-indigo-400",
-    webhookUrl: "https://dindon.app.n8n.cloud/webhook/sleep",
+    webhookUrl: "https://dindon.app.n8n.cloud/webhook/productivity",
   },
   {
     id: "depression",
-    title: "Depression",
+    title: "Spiritual",
     icon: CloudRain,
     color:
       "bg-slate-100 dark:bg-slate-900/20 border-slate-200 dark:border-slate-800",
     iconColor: "text-slate-600 dark:text-slate-400",
-    webhookUrl: "https://dindon.app.n8n.cloud/webhook/jiwohook",
+    webhookUrl: "https://dindon.app.n8n.cloud/webhook/spiritual",
   },
   {
     id: "workstress",
