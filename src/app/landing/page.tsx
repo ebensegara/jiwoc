@@ -60,17 +60,15 @@ export default function LandingPage() {
             </span>
           </div>
 
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
-            Hybrid AI + Human Support
+          <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight text-[#e6542d]">
+            Merawat Jiwa
             <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#756657] to-[#a08875]">
-              Teman CurHat Setiap Saat
-            </span>
+            <span className="text-[#fa6355]">Temukan Ketenangan</span>
           </h1>
 
           <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto leading-relaxed opacity-90">
-            Dapatkan dukungan kesehatan mental instan dengan pendamping AI yang
-            tersedia 24/7. Tanpa antrian, tanpa biaya tersembunyi, 100% privat.
+            Teman digital untuk kesehatan mental dan penemuan diri. Kombinasi AI
+            cerdas dengan dukungan manusia yang hangat.
           </p>
 
           {/* Benefits Grid */}
