@@ -26,6 +26,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import FeaturesSection from "@/components/features-section";
 
 export default function LandingPage() {
   return (
@@ -173,6 +174,9 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
+
+      {/* Features Section */}
+      <FeaturesSection />
 
       {/* Interactive AI Chat Demo */}
       <section className="py-20 bg-gradient-to-br from-[#f8f6f3] to-[#f1ede8] dark:from-[#1f1d1a] dark:to-[#1b1918]">
