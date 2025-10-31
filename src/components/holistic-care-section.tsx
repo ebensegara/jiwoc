@@ -25,6 +25,13 @@ const services = [
     image:
       "https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=400&q=80",
   },
+  {
+    name: "Hypnotherapy",
+    description:
+      "Terapi hipnosis untuk mengatasi trauma, kecemasan, dan mengubah pola pikir negatif",
+    image:
+      "https://images.unsplash.com/photo-1499209974431-9dddcece7f88?w=400&q=80",
+  },
 ];
 
 export default function HolisticCareSection() {
@@ -53,7 +60,7 @@ export default function HolisticCareSection() {
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
           {services.map((service, index) => (
             <motion.div
               key={service.name}
