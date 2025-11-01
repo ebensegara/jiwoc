@@ -39,7 +39,7 @@ export default function LandingPage() {
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
           <img
-            src="https://images.unsplash.com/photo-1544027993-37dbfe43562a?w=1200&q=80"
+            src="/images/tempo-image-20251101T035225200Z.jpeg"
             alt="Happy woman in nature - representing mental wellness"
             className="w-full h-full object-cover"
           />
