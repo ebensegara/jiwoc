@@ -101,6 +101,29 @@ async function processSubscriptionPayment(payment: any) {
 
   if (error) {
     console.error('Error creating subscription:', error);
+    return;
+  }
+
+  // Update chat_usage to set is_premium = true
+  const { error: chatUsageError } = await supabase
+    .from('chat_usage')
+    .upsert(
+      {
+        user_id: payment.user_id,
+        is_premium: true,
+        chat_limit: 999999, // Unlimited for premium
+        updated_at: new Date().toISOString(),
+      },
+      { 
+        onConflict: 'user_id',
+        ignoreDuplicates: false 
+      }
+    );
+
+  if (chatUsageError) {
+    console.error('Error updating chat_usage:', chatUsageError);
+  } else {
+    console.log('Successfully updated is_premium for user:', payment.user_id);
   }
 }
 

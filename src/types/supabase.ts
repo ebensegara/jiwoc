@@ -329,6 +329,47 @@ export type Database = {
           },
         ]
       }
+      chat_usage: {
+        Row: {
+          chat_count: number | null
+          chat_limit: number | null
+          created_at: string | null
+          id: string
+          is_premium: boolean | null
+          reset_at: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          chat_count?: number | null
+          chat_limit?: number | null
+          created_at?: string | null
+          id?: string
+          is_premium?: boolean | null
+          reset_at?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          chat_count?: number | null
+          chat_limit?: number | null
+          created_at?: string | null
+          id?: string
+          is_premium?: boolean | null
+          reset_at?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_usage_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       documents: {
         Row: {
           content: string | null
@@ -949,6 +990,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      increment_chat_count: { Args: { p_user_id: string }; Returns: undefined }
       match_documents: {
         Args: { filter?: Json; match_count?: number; query_embedding: string }
         Returns: {

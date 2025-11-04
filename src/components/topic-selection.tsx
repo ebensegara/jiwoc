@@ -145,7 +145,7 @@ const topics = [
     color:
       "bg-violet-100 dark:bg-violet-900/20 border-violet-200 dark:border-violet-800",
     iconColor: "text-violet-600 dark:text-violet-400",
-    webhookUrl: "https://dindon.app.n8n.cloud/webhook/jiwohook",
+    webhookUrl: "https://n8n.srv1104373.hstgr.cloud/webhook-test/jiwoh1",
   },
 ];
 

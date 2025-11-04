@@ -6,9 +6,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Send, Bot, User } from "lucide-react";
+import { Send, Bot, User, AlertCircle } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/components/ui/use-toast";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 interface Message {
   id: string;
@@ -21,16 +22,24 @@ interface AIChatProps {
   webhookUrl?: string | null;
 }
 
+interface ChatUsage {
+  chat_count: number;
+  chat_limit: number;
+  is_premium: boolean;
+}
+
 export default function AIChat({ webhookUrl }: AIChatProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [chatUsage, setChatUsage] = useState<ChatUsage | null>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
   useEffect(() => {
     fetchMessages();
+    fetchChatUsage();
 
     // Subscribe to realtime changes
     const channel = supabase
@@ -48,6 +57,52 @@ export default function AIChat({ webhookUrl }: AIChatProps) {
       supabase.removeChannel(channel);
     };
   }, []);
+
+  const fetchChatUsage = async () => {
+    try {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) return;
+
+      // Use limit(1) to ensure we only get one record
+      const { data, error } = await supabase
+        .from("chat_usage")
+        .select("*")
+        .eq("user_id", user.id)
+        .limit(1)
+        .maybeSingle();
+
+      if (error) {
+        console.error("Error fetching chat usage:", error);
+        throw error;
+      }
+
+      if (!data) {
+        // Create new chat_usage record with upsert to prevent duplicates
+        const { data: newUsage, error: insertError } = await supabase
+          .from("chat_usage")
+          .upsert(
+            {
+              user_id: user.id,
+              chat_count: 0,
+              chat_limit: 10,
+              is_premium: false,
+            },
+            { onConflict: "user_id" }
+          )
+          .select()
+          .single();
+
+        if (insertError) throw insertError;
+        setChatUsage(newUsage);
+      } else {
+        setChatUsage(data);
+      }
+    } catch (error: any) {
+      console.error("Error fetching chat usage:", error);
+    }
+  };
 
   const fetchMessages = async () => {
     try {
@@ -111,6 +166,16 @@ export default function AIChat({ webhookUrl }: AIChatProps) {
         data: { user },
       } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
+
+      // Check chat limit
+      if (chatUsage && !chatUsage.is_premium && chatUsage.chat_count >= chatUsage.chat_limit) {
+        toast({
+          title: "Chat Limit Reached",
+          description: `You've reached your daily limit of ${chatUsage.chat_limit} messages. Upgrade to premium for unlimited chats!`,
+          variant: "destructive",
+        });
+        return;
+      }
 
       const userMessage = inputValue;
 
@@ -193,6 +258,36 @@ export default function AIChat({ webhookUrl }: AIChatProps) {
         ]);
 
         if (aiError) throw aiError;
+
+        // Use RPC or direct increment to avoid race conditions
+        const { error: updateError } = await supabase.rpc('increment_chat_count', {
+          p_user_id: user.id
+        });
+
+        if (updateError) {
+          console.error('Update error:', updateError);
+          // Fallback to manual update if RPC doesn't exist
+          const { data: currentUsage } = await supabase
+            .from("chat_usage")
+            .select("chat_count")
+            .eq("user_id", user.id)
+            .limit(1)
+            .maybeSingle();
+
+          await supabase
+            .from("chat_usage")
+            .update({
+              chat_count: (currentUsage?.chat_count || 0) + 1,
+              updated_at: new Date().toISOString(),
+            })
+            .eq("user_id", user.id);
+        }
+
+        console.log('Chat count updated successfully');
+
+        // Refresh chat usage to update UI
+        await fetchChatUsage();
+
       } catch (webhookError: any) {
         console.error('Webhook error details:', webhookError);
         
@@ -209,6 +304,31 @@ export default function AIChat({ webhookUrl }: AIChatProps) {
         ]);
 
         if (aiError) throw aiError;
+
+        // Use RPC or direct increment
+        const { error: updateError } = await supabase.rpc('increment_chat_count', {
+          p_user_id: user.id
+        });
+
+        if (updateError) {
+          const { data: currentUsage } = await supabase
+            .from("chat_usage")
+            .select("chat_count")
+            .eq("user_id", user.id)
+            .limit(1)
+            .maybeSingle();
+
+          await supabase
+            .from("chat_usage")
+            .update({
+              chat_count: (currentUsage?.chat_count || 0) + 1,
+              updated_at: new Date().toISOString(),
+            })
+            .eq("user_id", user.id);
+        }
+
+        // Refresh chat usage
+        await fetchChatUsage();
 
         toast({
           title: "Connection Issue",
@@ -246,6 +366,9 @@ export default function AIChat({ webhookUrl }: AIChatProps) {
     );
   }
 
+  const isLimitReached = chatUsage && !chatUsage.is_premium && chatUsage.chat_count >= chatUsage.chat_limit;
+  const remainingChats = chatUsage ? Math.max(0, chatUsage.chat_limit - chatUsage.chat_count) : 0;
+
   return (
     <div className="flex flex-col h-full">
       {/* Header */}
@@ -260,8 +383,43 @@ export default function AIChat({ webhookUrl }: AIChatProps) {
           <p className="text-sm text-muted-foreground">
             A safe space to share your thoughts and feelings
           </p>
+          
+          {/* Chat Usage Indicator */}
+          {chatUsage && !chatUsage.is_premium && (
+            <div className="mt-2">
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-muted-foreground">
+                  Messages remaining: {remainingChats} / {chatUsage.chat_limit}
+                </span>
+                {isLimitReached && (
+                  <span className="text-destructive font-semibold">Limit reached</span>
+                )}
+              </div>
+              <div className="w-full bg-muted rounded-full h-2 mt-1">
+                <div
+                  className={`h-2 rounded-full transition-all ${
+                    isLimitReached ? "bg-destructive" : "bg-primary"
+                  }`}
+                  style={{
+                    width: `${(chatUsage.chat_count / chatUsage.chat_limit) * 100}%`,
+                  }}
+                />
+              </div>
+            </div>
+          )}
         </CardHeader>
       </Card>
+
+      {/* Limit Warning */}
+      {isLimitReached && (
+        <Alert variant="destructive" className="mb-4">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Chat Limit Reached</AlertTitle>
+          <AlertDescription>
+            You've used all {chatUsage?.chat_limit} free messages today. Upgrade to premium for unlimited AI conversations!
+          </AlertDescription>
+        </Alert>
+      )}
 
       {/* Chat Messages */}
       <Card className="flex-1 flex flex-col">
@@ -346,21 +504,23 @@ export default function AIChat({ webhookUrl }: AIChatProps) {
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder="Share what's on your mind..."
+              placeholder={isLimitReached ? "Upgrade to continue chatting..." : "Share what's on your mind..."}
               className="flex-1"
-              disabled={isTyping}
+              disabled={isTyping || isLimitReached}
             />
             <Button
               onClick={handleSendMessage}
-              disabled={!inputValue.trim() || isTyping}
+              disabled={!inputValue.trim() || isTyping || isLimitReached}
               size="icon"
             >
               <Send className="h-4 w-4" />
             </Button>
           </div>
           <p className="text-xs text-muted-foreground mt-2 text-center">
-            This is a supportive space. Feel free to share your thoughts and
-            feelings.
+            {isLimitReached 
+              ? "Upgrade to premium for unlimited conversations"
+              : "This is a supportive space. Feel free to share your thoughts and feelings."
+            }
           </p>
         </div>
       </Card>
