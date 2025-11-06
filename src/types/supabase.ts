@@ -632,6 +632,24 @@ export type Database = {
           },
         ]
       }
+      n8n_chat: {
+        Row: {
+          id: number
+          message: Json
+          session_id: string
+        }
+        Insert: {
+          id?: number
+          message: Json
+          session_id: string
+        }
+        Update: {
+          id?: number
+          message?: Json
+          session_id?: string
+        }
+        Relationships: []
+      }
       payments: {
         Row: {
           amount: number
@@ -842,7 +860,8 @@ export type Database = {
           created_at: string | null
           id: string
           responses: Json | null
-          score: number
+          result_data: Json | null
+          score: number | null
           screening_type: string
           severity_level: string | null
           user_id: string
@@ -851,7 +870,8 @@ export type Database = {
           created_at?: string | null
           id?: string
           responses?: Json | null
-          score: number
+          result_data?: Json | null
+          score?: number | null
           screening_type: string
           severity_level?: string | null
           user_id: string
@@ -860,7 +880,8 @@ export type Database = {
           created_at?: string | null
           id?: string
           responses?: Json | null
-          score?: number
+          result_data?: Json | null
+          score?: number | null
           screening_type?: string
           severity_level?: string | null
           user_id?: string
