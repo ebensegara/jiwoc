@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/components/ui/use-toast";
+import { Loader2 } from "lucide-react";
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
@@ -74,8 +75,8 @@ export default function AuthPage() {
           description: "You've successfully logged in.",
         });
 
-        // Redirect to home (dashboard)
-        router.replace("/");
+        // Redirect to dashboard selection page
+        router.replace("/dashboard");
       } else {
         // Sign Up
         const { data, error } = await supabase.auth.signUp({
@@ -116,8 +117,8 @@ export default function AuthPage() {
         });
 
         if (!loginError) {
-          // Redirect to home (dashboard)
-          router.replace("/");
+          // Redirect to dashboard selection page
+          router.replace("/dashboard");
         } else {
           setIsLogin(true);
         }
@@ -289,11 +290,43 @@ export default function AuthPage() {
 
             <Button
               type="submit"
+              className="w-full bg-[#8B6CFD] hover:bg-[#7A5CE8]"
               disabled={loading}
-              className="w-full bg-[#765567] text-white py-3 rounded-lg font-semibold text-lg hover:bg-[#765567]/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#e6e2df] dark:focus:ring-offset-[#1a1618] focus:ring-[#765567] transition-all duration-300"
             >
-              {loading ? "Loading..." : isLogin ? "Login" : "Sign Up"}
+              {loading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  {isLogin ? "Signing in..." : "Creating account..."}
+                </>
+              ) : (
+                <>{isLogin ? "Sign In" : "Sign Up"}</>
+              )}
             </Button>
+
+            <div className="text-center space-y-2">
+              <button
+                type="button"
+                onClick={() => setIsLogin(!isLogin)}
+                className="text-sm text-[#8B6CFD] hover:underline"
+              >
+                {isLogin
+                  ? "Don't have an account? Sign up"
+                  : "Already have an account? Sign in"}
+              </button>
+              
+              <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
+                <p className="text-xs text-gray-600 dark:text-gray-400 mb-2">
+                  Are you an HR Admin?
+                </p>
+                <button
+                  type="button"
+                  onClick={() => router.push("/corporate/setup")}
+                  className="text-sm text-[#8B6CFD] hover:underline font-medium"
+                >
+                  Set up Corporate Wellness Program →
+                </button>
+              </div>
+            </div>
           </form>
 
           {/* Divider */}

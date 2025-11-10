@@ -63,9 +63,9 @@ export default function LandingPage() {
           </div>
 
           <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight text-[#e6542d]">
-            Merawat Jiwa
+            Jiwo Corporate
             <br />
-            <span className="text-[#fa6355]">Temukan Ketenangan</span>
+            <span className="text-[#fa6355]">Wellness Program</span>
           </h1>
 
           <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto leading-relaxed opacity-90">
@@ -252,6 +252,7 @@ export default function LandingPage() {
                     placeholder="Ketik pesan Anda..."
                     className="flex-1 p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#756657] dark:bg-gray-800"
                     disabled
+                    suppressHydrationWarning
                   />
                   <button className="bg-[#756657] text-white p-3 rounded-lg hover:bg-[#756657]/90 transition-colors">
                     <MessageCircle className="w-5 h-5 text-red-400" />

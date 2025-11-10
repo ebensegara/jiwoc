@@ -16,7 +16,7 @@
 │  │  ┌────────────────────────────────────────────────────┐  │  │
 │  │  │         Tailwind CSS + shadcn/ui                   │  │  │
 │  │  └────────────────────────────────────────────────────┘  │  │
-│  └──────────────────────────────────────────────────────────┘  │
+│  └───────────────────────────────────────────────────────���──┘  │
 └─────────────────────────────────────────────────────────────────┘
                               ↕ HTTPS
 ┌─────────────────────────────────────────────────────────────────┐
@@ -152,7 +152,7 @@ src/
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                        App Layout                            │
-│  ┌───────────────────────────────────────────────────────┐  │
+│  ┌───────────────────────────────────��───────────────────┐  │
 │  │                    Navigation                         │  │
 │  │  ┌──────────────┐  ┌──────────────┐                  │  │
 │  │  │Desktop Sidebar│  │Mobile Bottom │                  │  │
@@ -163,7 +163,7 @@ src/
 │  │                  Main Content Area                    │  │
 │  │  ┌─────────────────────────────────────────────────┐  │  │
 │  │  │         Feature Components (Dynamic)            │  │  │
-│  │  │  • Dashboard                                    │  │  │
+│  ���  │  • Dashboard                                    │  │  │
 │  │  │  • Mood Checkin                                 │  │  │
 │  │  │  • AI Chat                                      │  │  │
 │  │  │  • Journal                                      │  │  │
@@ -832,6 +832,193 @@ console.error('[Webhook] Payment processing failed:', error);
 - [ ] GraphQL API layer
 - [ ] Event-driven architecture (message queue)
 - [ ] Multi-region deployment
+
+---
+
+## 14. Corporate Wellness Program Architecture
+
+### Overview
+The Corporate Wellness Program extends Jiwo.AI to support enterprise clients with HR/admin dashboards for monitoring employee wellness at scale.
+
+### Key Components
+
+#### 1. Database Schema
+```
+companies
+├── company_admins (many-to-many with users)
+├── company_employees (many-to-many with users)
+├── company_insights (weekly aggregated data)
+└── company_alerts (AI-generated notifications)
+```
+
+#### 2. Dashboard Features
+- **Aggregated Analytics**: Privacy-protected employee wellness metrics
+- **Department Insights**: Team-level mood and engagement tracking
+- **AI-Powered Insights**: Automated pattern detection and recommendations
+- **Real-time Alerts**: Proactive notifications for HR intervention
+
+#### 3. Privacy Architecture
+```
+Individual Employee Data (Private)
+    ↓
+Aggregation Layer (Anonymization)
+    ↓
+Department-Level Metrics (Min 5 employees)
+    ↓
+Company Dashboard (HR View)
+```
+
+**Privacy Rules:**
+- No individual employee data visible to HR
+- Department insights require minimum 5 employees
+- All metrics are aggregated and anonymized
+- Employee consent required for participation
+- Opt-out available at any time
+
+#### 4. AI Insights Engine
+
+**Pattern Detection:**
+- Stress peak analysis (time-of-day, day-of-week)
+- Department engagement trends
+- Mood trajectory predictions
+- Intervention recommendations
+
+**Example Insights:**
+```javascript
+{
+  type: "stress_peak",
+  title: "Monday Stress Pattern Detected",
+  description: "Stress levels peak on Monday mornings around 10 AM",
+  severity: "warning",
+  recommendation: "Consider flexible start times or Monday wellness activities"
+}
+```
+
+#### 5. Data Flow
+
+```
+Employee Actions (Mood, Journal, Sessions)
+    ↓
+Real-time Database Updates
+    ↓
+Scheduled Aggregation (Daily)
+    ↓
+AI Analysis Engine
+    ↓
+Insights & Alerts Generation
+    ↓
+HR Dashboard Display
+```
+
+#### 6. Access Control
+
+**Role Hierarchy:**
+```
+Super Admin (Jiwo.AI)
+    ↓
+Company Admin (HR)
+    ↓
+Company Employee (User)
+```
+
+**Permissions:**
+- Company Admin: View aggregated data, manage employees, configure settings
+- Company Employee: Standard user features + company affiliation
+- Super Admin: Full system access
+
+#### 7. Subscription Model
+
+**Corporate Plans:**
+- Basic: Rp 25,000/employee/month (min 50)
+- Business: Rp 40,000/employee/month (min 100)
+- Enterprise: Custom pricing (500+)
+
+**Billing:**
+- Monthly recurring
+- Per-employee pricing
+- Automatic scaling
+- Usage-based add-ons
+
+#### 8. Integration Points
+
+**Current:**
+- Supabase Auth (user management)
+- Supabase Realtime (live updates)
+- QRIS Payment (corporate billing)
+
+**Future:**
+- HR Systems (Workday, BambooHR)
+- SSO (SAML, OAuth)
+- Calendar (Google, Outlook)
+- Slack/Teams notifications
+
+#### 9. Performance Considerations
+
+**Optimization:**
+- Pre-aggregated metrics (daily cron)
+- Indexed queries on company_id
+- Cached dashboard data (5-minute TTL)
+- Lazy loading for large datasets
+
+**Scalability:**
+- Horizontal scaling for analytics
+- Separate read replicas for reporting
+- Queue-based insight generation
+- CDN for static assets
+
+#### 10. Compliance & Security
+
+**Data Protection:**
+- GDPR compliant
+- Indonesian data protection laws
+- Employee consent management
+- Data retention policies (90 days)
+- Audit logs for HR access
+
+**Security Measures:**
+- Row-level security (RLS)
+- Encrypted data at rest
+- HTTPS only
+- Regular security audits
+- Penetration testing
+
+### API Endpoints (Future)
+
+```typescript
+// Corporate Dashboard API
+GET /api/corporate/dashboard
+GET /api/corporate/insights
+GET /api/corporate/departments
+GET /api/corporate/alerts
+POST /api/corporate/employees/invite
+DELETE /api/corporate/employees/:id
+
+// Analytics API
+GET /api/corporate/analytics/mood-trends
+GET /api/corporate/analytics/engagement
+GET /api/corporate/analytics/stress-patterns
+GET /api/corporate/analytics/export
+```
+
+### Monitoring & Alerts
+
+**System Monitoring:**
+- Dashboard load times
+- Query performance
+- API response times
+- Error rates
+
+**Business Monitoring:**
+- Active companies
+- Employee enrollment
+- Feature usage
+- Churn indicators
+
+**Alert Triggers:**
+- Critical stress levels (avg < 2.0)
+- Low engagement (< 20%)
+- Department anomalies
+- System errors
 
 ---
 

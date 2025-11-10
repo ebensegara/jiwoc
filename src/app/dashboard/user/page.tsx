@@ -14,12 +14,12 @@ import BookingModal from "@/components/booking-modal";
 
 interface Professional {
   id: string;
-  title: string;
+  full_name: string;
   category: string;
   specialization: string;
   bio: string;
   rating: number;
-  photo_url: string;
+  avatar_url: string;
   is_available: boolean;
   price_per_session: number;
 }
@@ -132,7 +132,7 @@ export default function UserDashboard() {
     if (searchQuery) {
       filtered = filtered.filter(
         (prof) =>
-          prof.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          prof.full_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
           prof.specialization.toLowerCase().includes(searchQuery.toLowerCase()) ||
           prof.bio.toLowerCase().includes(searchQuery.toLowerCase())
       );
@@ -222,9 +222,9 @@ export default function UserDashboard() {
                 <CardContent className="p-6">
                   <div className="flex items-start gap-4 mb-4">
                     <Avatar className="h-16 w-16">
-                      <AvatarImage src={professional.photo_url} />
+                      <AvatarImage src={professional.avatar_url} />
                       <AvatarFallback>
-                        {professional.title.charAt(0)}
+                        {professional.full_name.charAt(0)}
                       </AvatarFallback>
                     </Avatar>
                     <div className="flex-1">
@@ -241,7 +241,7 @@ export default function UserDashboard() {
                         )}
                       </div>
                       <h3 className="font-bold text-gray-800 dark:text-white text-lg">
-                        {professional.title}
+                        {professional.full_name}
                       </h3>
                       <p className="text-sm text-[#8B6CFD] font-medium">
                         {professional.specialization}
@@ -294,7 +294,7 @@ export default function UserDashboard() {
       {showChatModal && selectedProfessional && (
         <ChatWindow
           professionalId={selectedProfessional.id}
-          professionalName={selectedProfessional.title}
+          professionalName={selectedProfessional.full_name}
           onClose={() => {
             setShowChatModal(false);
             setSelectedProfessional(null);
@@ -312,7 +312,7 @@ export default function UserDashboard() {
           }}
           professional={{
             id: selectedProfessional.id,
-            full_name: selectedProfessional.title,
+            full_name: selectedProfessional.full_name,
             price_per_session: selectedProfessional.price_per_session,
           }}
           onSuccess={() => {
