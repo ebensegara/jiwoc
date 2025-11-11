@@ -21,7 +21,9 @@ export default function SignupPage() {
 
   useEffect(() => {
     const checkSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       if (session) {
         router.push("/dashboard");
       } else {
@@ -52,20 +54,18 @@ export default function SignupPage() {
       if (error) throw error;
 
       if (data.user) {
-        const { error: profileError } = await supabase
-          .from("users")
-          .upsert(
-            {
-              id: data.user.id,
-              email: data.user.email,
-              full_name: fullName,
-              role: role,
-            },
-            {
-              onConflict: "id",
-              ignoreDuplicates: false,
-            }
-          );
+        const { error: profileError } = await supabase.from("users").upsert(
+          {
+            id: data.user.id,
+            email: data.user.email,
+            full_name: fullName,
+            role: role,
+          },
+          {
+            onConflict: "id",
+            ignoreDuplicates: false,
+          },
+        );
 
         if (profileError) throw profileError;
 
@@ -83,7 +83,7 @@ export default function SignupPage() {
               {
                 onConflict: "user_id",
                 ignoreDuplicates: false,
-              }
+              },
             );
 
           if (professionalError) throw professionalError;
@@ -159,7 +159,7 @@ export default function SignupPage() {
                 htmlFor="fullName"
                 className="text-sm font-medium text-[#161315] dark:text-[#f7f7f7]"
               >
-                Nama Lengkap
+                Nama Panggilan
               </Label>
               <Input
                 id="fullName"
