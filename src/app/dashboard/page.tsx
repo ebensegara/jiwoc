@@ -18,7 +18,7 @@ export default function DashboardPage() {
       const { data: { user } } = await supabase.auth.getUser();
       
       if (!user) {
-        router.replace("/auth");
+        router.push("/auth");
         return;
       }
 
@@ -30,21 +30,21 @@ export default function DashboardPage() {
 
       const role = userData?.role || "user";
 
-      // Route based on role
+      // Use push instead of replace to maintain history
       if (role === "professional") {
-        router.replace("/dashboard/professional");
+        router.push("/dashboard/professional");
       } else if (role === "user") {
-        router.replace("/dashboard/user");
+        router.push("/dashboard/user");
       } else if (role === "admin") {
-        router.replace("/dashboard/admin");
+        router.push("/dashboard/admin");
       } else if (role === "company_admin") {
-        router.replace("/dashboard/corporate");
+        router.push("/dashboard/corporate");
       } else {
-        router.replace("/dashboard/user");
+        router.push("/dashboard/user");
       }
     } catch (error) {
       console.error("Error:", error);
-      router.replace("/dashboard/user");
+      router.push("/dashboard/user");
     }
   };
 

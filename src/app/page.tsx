@@ -8,8 +8,8 @@ export default function HomePage() {
   const router = useRouter();
 
   useEffect(() => {
-    // Redirect to dashboard - let dashboard handle role-based routing
-    router.replace("/dashboard");
+    // Use push instead of replace to maintain history
+    router.push("/dashboard");
   }, [router]);
 
   return (
