@@ -55,3 +55,8 @@ public/workbox-*.js.map
 .git
 
 .github/
+
+# Large video files
+public/videos/*.mp4
+uploads/*.mp4
+*.mp4

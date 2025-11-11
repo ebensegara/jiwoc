@@ -16,6 +16,7 @@ import {
   BarChart3,
   Brain,
   Loader2,
+  LogOut,
 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
@@ -65,6 +66,23 @@ export default function CorporateDashboard() {
   const [departmentInsights, setDepartmentInsights] = useState<DepartmentInsight[]>([]);
   const [aiInsights, setAIInsights] = useState<AIInsight[]>([]);
   const [alerts, setAlerts] = useState<any[]>([]);
+
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut();
+      toast({
+        title: "Logged out",
+        description: "You have been successfully logged out.",
+      });
+      router.replace("/auth");
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to logout",
+        variant: "destructive",
+      });
+    }
+  };
 
   useEffect(() => {
     initializeDashboard();
@@ -262,9 +280,15 @@ export default function CorporateDashboard() {
                 HR Analytics & Employee Wellness Insights
               </p>
             </div>
-            <Button onClick={() => router.push("/dashboard")}>
-              Back to Dashboard
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button variant="outline" onClick={() => router.push("/dashboard")}>
+                Back to Dashboard
+              </Button>
+              <Button variant="ghost" onClick={handleLogout} className="flex items-center gap-2">
+                <LogOut className="h-4 w-4" />
+                Logout
+              </Button>
+            </div>
           </div>
         </div>
       </header>

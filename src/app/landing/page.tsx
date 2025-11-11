@@ -39,7 +39,7 @@ export default function LandingPage() {
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
           <img
-            src="/images/tempo-image-20251101T035225200Z.jpeg"
+            src="https://vwzfzykgwwoywkrojkeh.supabase.co/storage/v1/object/public/internal_app/hero3.png"
             alt="Happy woman in nature - representing mental wellness"
             className="w-full h-full object-cover"
           />
