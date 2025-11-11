@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,11 +9,9 @@ import { supabase } from "@/lib/supabase";
 import { useToast } from "@/components/ui/use-toast";
 import { Loader2 } from "lucide-react";
 
-export default function AuthPage() {
-  const [isLogin, setIsLogin] = useState(true);
+export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [fullName, setFullName] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
@@ -23,88 +21,44 @@ export default function AuthPage() {
     setLoading(true);
 
     try {
-      if (isLogin) {
-        const { data, error } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        });
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
 
-        if (error) throw error;
+      if (error) throw error;
 
-        if (data.user) {
-          const { data: existingUser } = await supabase
-            .from("users")
-            .select("id")
-            .eq("id", data.user.id)
-            .single();
+      if (data.user) {
+        const { data: existingUser } = await supabase
+          .from("users")
+          .select("id")
+          .eq("id", data.user.id)
+          .single();
 
-          if (!existingUser) {
-            await supabase
-              .from("users")
-              .insert([
-                {
-                  id: data.user.id,
-                  email: data.user.email,
-                  full_name: data.user.user_metadata?.full_name || "",
-                  role: "user",
-                },
-              ]);
-          }
-
-          toast({
-            title: "Welcome back!",
-            description: "You've successfully logged in.",
-          });
-
-          router.replace("/dashboard");
-        }
-      } else {
-        const { data, error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            emailRedirectTo: `${window.location.origin}/auth/callback`,
-            data: {
-              full_name: fullName,
-            },
-          },
-        });
-
-        if (error) throw error;
-
-        if (data.user) {
+        if (!existingUser) {
           await supabase
             .from("users")
             .insert([
               {
                 id: data.user.id,
                 email: data.user.email,
-                full_name: fullName,
+                full_name: data.user.user_metadata?.full_name || "",
                 role: "user",
               },
             ]);
         }
 
         toast({
-          title: "Account created!",
-          description: "You can now log in with your credentials.",
+          title: "Selamat datang kembali!",
+          description: "Anda berhasil masuk.",
         });
 
-        const { error: loginError } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        });
-
-        if (!loginError) {
-          router.replace("/dashboard");
-        } else {
-          setIsLogin(true);
-        }
+        router.push("/dashboard");
       }
     } catch (error: any) {
       toast({
         title: "Error",
-        description: error.message || "Something went wrong",
+        description: error.message || "Terjadi kesalahan",
         variant: "destructive",
       });
     } finally {
@@ -120,55 +74,16 @@ export default function AuthPage() {
             Jiwo.AI
           </h1>
           <p className="text-[#9e8d7d] dark:text-[#7c6a76] mt-2">
-            Your companion for mental wellness.
+            Teman Anda untuk kesehatan mental
           </p>
         </div>
 
         <div className="bg-[#e6e2df]/50 dark:bg-[#1a1618]/50 p-8 rounded-xl shadow-2xl backdrop-blur-lg">
-          <div className="flex border-b border-[#9e8d7d]/30 dark:border-[#7c6a76]/30 mb-6">
-            <button
-              onClick={() => setIsLogin(true)}
-              className={`flex-1 py-3 text-lg font-semibold transition-colors duration-300 ${
-                isLogin
-                  ? "border-b-2 border-[#765567] text-[#765567]"
-                  : "text-[#9e8d7d] dark:text-[#7c6a76] hover:text-[#765567] dark:hover:text-[#765567]"
-              }`}
-            >
-              Login
-            </button>
-            <button
-              onClick={() => setIsLogin(false)}
-              className={`flex-1 py-3 text-lg font-semibold transition-colors duration-300 ${
-                !isLogin
-                  ? "border-b-2 border-[#765567] text-[#765567]"
-                  : "text-[#9e8d7d] dark:text-[#7c6a76] hover:text-[#765567] dark:hover:text-[#765567]"
-              }`}
-            >
-              Sign Up
-            </button>
-          </div>
+          <h2 className="text-2xl font-bold text-center text-[#161315] dark:text-[#f7f7f7] mb-6">
+            Masuk
+          </h2>
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            {!isLogin && (
-              <div>
-                <Label
-                  htmlFor="fullName"
-                  className="text-sm font-medium text-[#161315] dark:text-[#f7f7f7]"
-                >
-                  Full Name
-                </Label>
-                <Input
-                  id="fullName"
-                  type="text"
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  placeholder="John Doe"
-                  required={!isLogin}
-                  className="mt-1 block w-full px-4 py-3 bg-[#e6e2df]/70 dark:bg-[#1a1618]/70 border-0 rounded-xl text-[#161315] dark:text-[#f7f7f7] placeholder-[#9e8d7d] dark:placeholder-[#7c6a76] focus:ring-2 focus:ring-[#765567] focus:outline-none"
-                />
-              </div>
-            )}
-
             <div>
               <Label
                 htmlFor="email"
@@ -181,7 +96,7 @@ export default function AuthPage() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.com"
+                placeholder="anda@example.com"
                 required
                 className="mt-1 block w-full px-4 py-3 bg-[#e6e2df]/70 dark:bg-[#1a1618]/70 border-0 rounded-xl text-[#161315] dark:text-[#f7f7f7] placeholder-[#9e8d7d] dark:placeholder-[#7c6a76] focus:ring-2 focus:ring-[#765567] focus:outline-none"
               />
@@ -208,40 +123,38 @@ export default function AuthPage() {
 
             <Button
               type="submit"
-              className="w-full bg-[#8B6CFD] hover:bg-[#7A5CE8]"
+              className="w-full bg-[#8B6CFD] hover:bg-[#7A5CE8] py-3 text-lg font-semibold"
               disabled={loading}
             >
               {loading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  {isLogin ? "Signing in..." : "Creating account..."}
+                  Memproses...
                 </>
               ) : (
-                <>{isLogin ? "Sign In" : "Sign Up"}</>
+                "Masuk"
               )}
             </Button>
 
-            <div className="text-center space-y-2">
+            <div className="text-center space-y-3">
               <button
                 type="button"
-                onClick={() => setIsLogin(!isLogin)}
-                className="text-sm text-[#8B6CFD] hover:underline"
+                onClick={() => router.push("/auth/signup")}
+                className="text-sm text-[#8B6CFD] hover:underline block w-full"
               >
-                {isLogin
-                  ? "Don't have an account? Sign up"
-                  : "Already have an account? Sign in"}
+                Belum punya akun? Daftar sekarang
               </button>
               
-              <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
+              <div className="pt-3 border-t border-gray-200 dark:border-gray-700">
                 <p className="text-xs text-gray-600 dark:text-gray-400 mb-2">
-                  Are you an HR Admin?
+                  Apakah Anda HR Admin?
                 </p>
                 <button
                   type="button"
                   onClick={() => router.push("/corporate/setup")}
                   className="text-sm text-[#8B6CFD] hover:underline font-medium"
                 >
-                  Set up Corporate Wellness Program →
+                  Setup Program Corporate Wellness →
                 </button>
               </div>
             </div>
