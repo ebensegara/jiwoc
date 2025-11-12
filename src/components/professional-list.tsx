@@ -13,14 +13,14 @@ import BookingModal from './booking-modal';
 
 interface Professional {
   id: string;
-  title: string;
+  full_name: string;
   category: string;
   specialization: string;
   bio: string;
   rating: number;
-  photo_url: string;
-  contact_email: string;
+  avatar_url: string;
   price_per_session: number;
+  is_available: boolean;
 }
 
 interface ProfessionalListProps {
@@ -34,9 +34,6 @@ export default function ProfessionalList({ category = "all", onBack }: Professio
   const [selectedProfessional, setSelectedProfessional] = useState<Professional | null>(null);
   const [showBookingModal, setShowBookingModal] = useState(false);
   const { toast } = useToast();
-
-  // Get Supabase URL from environment
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 
   useEffect(() => {
     async function fetchProfessionals() {
@@ -76,21 +73,6 @@ export default function ProfessionalList({ category = "all", onBack }: Professio
   const handleBookingSuccess = () => {
     setShowBookingModal(false);
     setSelectedProfessional(null);
-  };
-
-  // Get photo URL from Supabase Storage
-  const getPhotoUrl = (photoUrl: string) => {
-    if (!photoUrl || !supabaseUrl) {
-      console.log('Missing photoUrl or supabaseUrl:', { photoUrl, supabaseUrl });
-      return '';
-    }
-    
-    // Remove any leading slashes from photoUrl
-    const cleanPhotoUrl = photoUrl.replace(/^\/+/, '');
-    const fullUrl = `${supabaseUrl}/storage/v1/object/public/professional-photos/${cleanPhotoUrl}`;
-    
-    console.log('Generated photo URL:', fullUrl);
-    return fullUrl;
   };
 
   // Get initials from name
@@ -143,18 +125,18 @@ export default function ProfessionalList({ category = "all", onBack }: Professio
                     {/* Professional Photo */}
                     <Avatar className="h-20 w-20 border-4 border-white shadow-lg">
                       <AvatarImage 
-                        src={getPhotoUrl(professional.photo_url)} 
-                        alt={professional.title}
+                        src={professional.avatar_url} 
+                        alt={professional.full_name}
                       />
                       <AvatarFallback className="bg-gradient-to-br from-[#756657] to-[#8a7a6a] text-white text-2xl font-bold">
-                        {getInitials(professional.title)}
+                        {getInitials(professional.full_name)}
                       </AvatarFallback>
                     </Avatar>
 
                     <div className="flex-1">
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
-                          <CardTitle className="text-xl mb-1">{professional.title}</CardTitle>
+                          <CardTitle className="text-xl mb-1">{professional.full_name}</CardTitle>
                           <Badge variant="secondary" className="mt-2">
                             {professional.specialization}
                           </Badge>
@@ -188,7 +170,7 @@ export default function ProfessionalList({ category = "all", onBack }: Professio
                     </Button>
                     <ChatLauncher
                       professionalId={professional.id}
-                      professionalName={professional.title}
+                      professionalName={professional.full_name}
                     />
                   </div>
                 </CardContent>
@@ -205,7 +187,7 @@ export default function ProfessionalList({ category = "all", onBack }: Professio
           onClose={() => setShowBookingModal(false)}
           professional={{
             id: selectedProfessional.id,
-            full_name: selectedProfessional.title,
+            full_name: selectedProfessional.full_name,
             price_per_session: selectedProfessional.price_per_session,
           }}
           onSuccess={handleBookingSuccess}

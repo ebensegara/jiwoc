@@ -1,6 +1,7 @@
 import { TempoInit } from "@/components/tempo-init";
 import { Toaster } from "@/components/ui/toaster";
 import InstallPrompt from '@/components/install-prompt';
+import PWABackHandler from '@/components/pwa-back-handler';
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
@@ -52,6 +53,7 @@ export default function RootLayout({
         <link rel="apple-touch-icon" href="/icon-192x192.png" />
       </head>
       <body className={inter.className} suppressHydrationWarning>
+        <PWABackHandler />
         {children}
         <InstallPrompt />
         <Toaster />

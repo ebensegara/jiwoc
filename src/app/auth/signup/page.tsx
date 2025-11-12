@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/components/ui/use-toast";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Loader2 } from "lucide-react";
 
 export default function SignupPage() {
   const [email, setEmail] = useState("");
@@ -19,13 +19,13 @@ export default function SignupPage() {
   const { toast } = useToast();
   const [checkingAuth, setCheckingAuth] = useState(true);
 
-  // Check if user is already logged in
   useEffect(() => {
     const checkSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       if (session) {
-        // User is already logged in, redirect to home
-        router.replace('/');
+        router.push("/dashboard");
       } else {
         setCheckingAuth(false);
       }
@@ -39,49 +39,43 @@ export default function SignupPage() {
     setLoading(true);
 
     try {
-      // Sign Up
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
-          emailRedirectTo: `${window.location.origin}/`,
+          emailRedirectTo: `${window.location.origin}/dashboard`,
           data: {
             full_name: fullName,
-            role: role, // Add role to auth metadata
+            role: role,
           },
         },
       });
 
       if (error) throw error;
 
-      // Create user profile immediately with UPSERT
       if (data.user) {
-        const { error: profileError } = await supabase
-          .from("users")
-          .upsert(
-            {
-              id: data.user.id,
-              email: data.user.email,
-              full_name: fullName,
-              role: role, // Explicitly set role
-            },
-            {
-              onConflict: "id",
-              ignoreDuplicates: false,
-            }
-          );
+        const { error: profileError } = await supabase.from("users").upsert(
+          {
+            id: data.user.id,
+            email: data.user.email,
+            full_name: fullName,
+            role: role,
+          },
+          {
+            onConflict: "id",
+            ignoreDuplicates: false,
+          },
+        );
 
-        if (profileError) {
-          throw profileError; // Stop if profile creation fails
-        }
+        if (profileError) throw profileError;
 
-        // If professional, create professional profile
         if (role === "professional") {
           const { error: professionalError } = await supabase
             .from("professionals")
             .upsert(
               {
                 user_id: data.user.id,
+                full_name: fullName,
                 specialization: "",
                 bio: "",
                 photo_url: "",
@@ -89,36 +83,32 @@ export default function SignupPage() {
               {
                 onConflict: "user_id",
                 ignoreDuplicates: false,
-              }
+              },
             );
 
-          if (professionalError) {
-            throw professionalError; // Stop if professional profile creation fails
-          }
+          if (professionalError) throw professionalError;
         }
       }
 
       toast({
-        title: "Account created!",
-        description: `You are registered as a ${role}.`,
+        title: "Akun berhasil dibuat!",
+        description: `Anda terdaftar sebagai ${role === "user" ? "pengguna" : "profesional"}.`,
       });
 
-      // Auto login after signup
       const { error: loginError } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
       if (!loginError) {
-        // Redirect to home (dashboard)
-        router.replace("/");
+        router.push("/dashboard");
       } else {
-        router.replace("/auth");
+        router.push("/auth");
       }
     } catch (error: any) {
       toast({
         title: "Error",
-        description: error.message || "Something went wrong",
+        description: error.message || "Terjadi kesalahan",
         variant: "destructive",
       });
     } finally {
@@ -126,13 +116,12 @@ export default function SignupPage() {
     }
   };
 
-  // Show loading while checking auth
   if (checkingAuth) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-[#e6e2df] to-[#9e8d7d] dark:from-[#1a1618] dark:to-[#4d4349]">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#765567] mx-auto"></div>
-          <p className="mt-4 text-[#9e8d7d] dark:text-[#7c6a76]">Loading...</p>
+          <Loader2 className="h-12 w-12 animate-spin text-[#765567] mx-auto" />
+          <p className="mt-4 text-[#9e8d7d] dark:text-[#7c6a76]">Memuat...</p>
         </div>
       </div>
     );
@@ -143,11 +132,11 @@ export default function SignupPage() {
       <div className="w-full max-w-md mx-auto">
         <Button
           variant="ghost"
-          onClick={() => router.back()}
+          onClick={() => router.push("/auth")}
           className="mb-4 text-[#161315] dark:text-[#f7f7f7] hover:bg-[#765567]/10"
         >
           <ArrowLeft className="h-4 w-4 mr-2" />
-          Back
+          Kembali
         </Button>
 
         <div className="text-center mb-8">
@@ -155,26 +144,29 @@ export default function SignupPage() {
             Jiwo.AI
           </h1>
           <p className="text-[#9e8d7d] dark:text-[#7c6a76] mt-2">
-            Create your account
+            Teman Anda untuk kesehatan mental
           </p>
         </div>
 
         <div className="bg-[#e6e2df]/50 dark:bg-[#1a1618]/50 p-8 rounded-xl shadow-2xl backdrop-blur-lg">
-          {/* Form */}
+          <h2 className="text-2xl font-bold text-center text-[#161315] dark:text-[#f7f7f7] mb-6">
+            Daftar
+          </h2>
+
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <Label
                 htmlFor="fullName"
                 className="text-sm font-medium text-[#161315] dark:text-[#f7f7f7]"
               >
-                Full Name
+                Nama Panggilan
               </Label>
               <Input
                 id="fullName"
                 type="text"
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
-                placeholder="John Doe"
+                placeholder="Nama Anda"
                 required
                 className="mt-1 block w-full px-4 py-3 bg-[#e6e2df]/70 dark:bg-[#1a1618]/70 border-0 rounded-xl text-[#161315] dark:text-[#f7f7f7] placeholder-[#9e8d7d] dark:placeholder-[#7c6a76] focus:ring-2 focus:ring-[#765567] focus:outline-none"
               />
@@ -192,7 +184,7 @@ export default function SignupPage() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.com"
+                placeholder="anda@example.com"
                 required
                 className="mt-1 block w-full px-4 py-3 bg-[#e6e2df]/70 dark:bg-[#1a1618]/70 border-0 rounded-xl text-[#161315] dark:text-[#f7f7f7] placeholder-[#9e8d7d] dark:placeholder-[#7c6a76] focus:ring-2 focus:ring-[#765567] focus:outline-none"
               />
@@ -217,10 +209,9 @@ export default function SignupPage() {
               />
             </div>
 
-            {/* Role Selection */}
             <div>
               <Label className="text-sm font-medium text-[#161315] dark:text-[#f7f7f7] mb-3 block">
-                Select Your Role
+                Pilih Peran Anda
               </Label>
               <div className="space-y-3">
                 <label
@@ -240,10 +231,10 @@ export default function SignupPage() {
                   />
                   <div className="flex-1">
                     <span className="font-bold text-base text-[#161315] dark:text-[#f7f7f7] block">
-                      User
+                      Pengguna
                     </span>
                     <p className="text-xs text-[#9e8d7d] dark:text-[#7c6a76] mt-1">
-                      I'm looking for mental health support
+                      Saya mencari dukungan kesehatan mental
                     </p>
                   </div>
                 </label>
@@ -265,10 +256,10 @@ export default function SignupPage() {
                   />
                   <div className="flex-1">
                     <span className="font-bold text-base text-[#161315] dark:text-[#f7f7f7] block">
-                      Professional
+                      Profesional
                     </span>
                     <p className="text-xs text-[#9e8d7d] dark:text-[#7c6a76] mt-1">
-                      I'm a mental health professional
+                      Saya adalah profesional kesehatan mental
                     </p>
                   </div>
                 </label>
@@ -278,22 +269,28 @@ export default function SignupPage() {
             <Button
               type="submit"
               disabled={loading}
-              className="w-full bg-[#765567] text-white py-3 rounded-lg font-semibold text-lg hover:bg-[#765567]/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#e6e2df] dark:focus:ring-offset-[#1a1618] focus:ring-[#765567] transition-all duration-300"
+              className="w-full bg-[#8B6CFD] hover:bg-[#7A5CE8] py-3 text-lg font-semibold"
             >
-              {loading ? "Creating account..." : "Sign Up"}
+              {loading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Membuat akun...
+                </>
+              ) : (
+                "Daftar"
+              )}
             </Button>
           </form>
 
-          {/* Link to Login */}
           <div className="mt-6 text-center">
             <p className="text-sm text-[#9e8d7d] dark:text-[#7c6a76]">
-              Already have an account?{" "}
-              <a
-                href="/auth"
-                className="text-[#765567] hover:underline font-semibold"
+              Sudah punya akun?{" "}
+              <button
+                onClick={() => router.push("/auth")}
+                className="text-[#8B6CFD] hover:underline font-semibold"
               >
-                Sign in
-              </a>
+                Masuk di sini
+              </button>
             </p>
           </div>
         </div>

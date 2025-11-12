@@ -18,29 +18,33 @@ export default function DashboardPage() {
       const { data: { user } } = await supabase.auth.getUser();
       
       if (!user) {
-        router.replace("/auth");
+        router.push("/auth");
         return;
       }
 
-      // Check if user is a professional
-      const { data: professional, error: profError } = await supabase
-        .from("professionals")
-        .select("id")
-        .eq("user_id", user.id)
+      const { data: userData } = await supabase
+        .from("users")
+        .select("role")
+        .eq("id", user.id)
         .single();
 
-      if (professional && !profError) {
-        // User is a professional
-        router.replace("/dashboard/professional");
+      const role = userData?.role || "user";
+
+      // Use push instead of replace to maintain history
+      if (role === "professional") {
+        router.push("/dashboard/professional");
+      } else if (role === "user") {
+        router.push("/dashboard/user");
+      } else if (role === "admin") {
+        router.push("/dashboard/admin");
+      } else if (role === "company_admin") {
+        router.push("/dashboard/corporate");
       } else {
-        // Regular user
-        router.replace("/dashboard/user");
+        router.push("/dashboard/user");
       }
     } catch (error) {
-      // Fallback to user dashboard on error
-      router.replace("/dashboard/user");
-    } finally {
-      setIsLoading(false);
+      console.error("Error:", error);
+      router.push("/dashboard/user");
     }
   };
 

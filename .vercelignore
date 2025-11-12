@@ -7,3 +7,15 @@ node_modules
 .idea
 coverage
 .turbo
+
+# Exclude all large media files
+uploads
+public/videos
+public/images/tempo-image-*.jpeg
+public/images/tempo-image-*.jpg
+
+# Exclude all video files
+*.mp4
+*.mov
+*.avi
+*.webm

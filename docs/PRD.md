@@ -4,27 +4,28 @@
 ## 1. Executive Summary
 
 **Product Name:** Jiwo.AI  
-**Version:** 1.0  
+**Version:** 2.0  
 **Last Updated:** January 2025  
 **Product Owner:** Jiwo.AI Team
 
 ### Vision
-Jiwo.AI is a compassionate digital companion app designed to support mental wellness through AI-powered conversations, mood tracking, journaling, and professional care connections. The platform aims to make mental health support accessible, affordable, and stigma-free for Indonesian users.
+Jiwo.AI is a compassionate digital companion app designed to support mental wellness through AI-powered conversations, mood tracking, journaling, and professional care connections. The platform aims to make mental health support accessible, affordable, and stigma-free for Indonesian users and corporate wellness programs.
 
 ### Mission
-To provide a comprehensive, user-friendly mental wellness platform that combines AI technology with professional care, empowering users to take control of their mental health journey.
+To provide a comprehensive, user-friendly mental wellness platform that combines AI technology with professional care, empowering individuals and organizations to take control of their mental health journey.
 
 ---
 
 ## 2. Product Overview
 
 ### 2.1 Product Description
-Jiwo.AI is a Next.js-based web application that serves as a mental wellness companion. It combines AI-powered chat support, mood tracking, journaling capabilities, self-screening tools, and direct access to mental health professionals.
+Jiwo.AI is a Next.js-based web application that serves as a mental wellness companion. It combines AI-powered chat support, mood tracking, journaling capabilities, self-screening tools, direct access to mental health professionals, and corporate wellness program management.
 
 ### 2.2 Target Audience
 - **Primary:** Indonesian adults (18-45 years) seeking mental health support
 - **Secondary:** Individuals experiencing stress, anxiety, or seeking personal development
 - **Tertiary:** People looking for professional mental health services
+- **Corporate:** HR departments and companies implementing employee wellness programs
 
 ### 2.3 Key Differentiators
 - AI-powered companion with wellness-focused conversations
@@ -34,6 +35,7 @@ Jiwo.AI is a Next.js-based web application that serves as a mental wellness comp
 - Holistic approach: therapy, yoga, art therapy, nutrition
 - Real-time chat with professionals
 - Progressive Web App (PWA) capabilities
+- Corporate wellness program management
 
 ---
 
@@ -369,6 +371,140 @@ payments (
 
 ---
 
+### 3.12 Corporate Wellness Program
+**Status:** ✅ Implemented
+
+**Features:**
+- **Jiwo Corporate Dashboard** for HR/Admin
+- Aggregated employee wellness data (privacy-protected)
+- Department-level analytics
+- AI-powered insights for HR
+- Real-time alerts and notifications
+- Stress pattern detection
+- Engagement tracking
+- Weekly wellness reports
+
+**Dashboard Metrics:**
+- Total employees enrolled
+- Active users (weekly/monthly)
+- Average mood score (company-wide)
+- Mood trends (positive/negative/stable)
+- Collective stress levels
+- Engagement rate
+- Journal activity
+- Professional session bookings
+- Department comparisons
+
+**AI Insights for HR:**
+- "Marketing team showing decreased engagement this week"
+- "Stress peaks detected on Monday mornings at 10 AM"
+- "Finance department trending positively - great work environment"
+- "Recommend team wellness session for Engineering"
+- Department-specific recommendations
+- Proactive intervention suggestions
+
+**Privacy & Compliance:**
+- No individual employee data visible to HR
+- Only aggregated, anonymized metrics
+- Department-level insights (minimum 5 employees)
+- GDPR and data protection compliant
+- Employee consent required
+- Opt-out options available
+
+**Database Schema:**
+```sql
+companies (
+  id UUID PRIMARY KEY,
+  name TEXT,
+  industry TEXT,
+  employee_count INTEGER,
+  admin_email TEXT,
+  subscription_plan TEXT,
+  subscription_status TEXT,
+  created_at TIMESTAMPTZ
+)
+
+company_admins (
+  id UUID PRIMARY KEY,
+  company_id UUID REFERENCES companies,
+  user_id UUID REFERENCES users,
+  role TEXT,
+  UNIQUE(company_id, user_id)
+)
+
+company_employees (
+  id UUID PRIMARY KEY,
+  company_id UUID REFERENCES companies,
+  user_id UUID REFERENCES users,
+  department TEXT,
+  position TEXT,
+  employee_id TEXT,
+  joined_at TIMESTAMPTZ,
+  UNIQUE(company_id, user_id)
+)
+
+company_insights (
+  id UUID PRIMARY KEY,
+  company_id UUID REFERENCES companies,
+  week_start DATE,
+  week_end DATE,
+  total_employees INTEGER,
+  active_users INTEGER,
+  avg_mood_score NUMERIC,
+  mood_trend TEXT,
+  stress_level TEXT,
+  engagement_rate NUMERIC,
+  journal_count INTEGER,
+  session_count INTEGER,
+  ai_insights JSONB,
+  department_insights JSONB,
+  created_at TIMESTAMPTZ
+)
+
+company_alerts (
+  id UUID PRIMARY KEY,
+  company_id UUID REFERENCES companies,
+  alert_type TEXT,
+  severity TEXT,
+  title TEXT,
+  description TEXT,
+  department TEXT,
+  metadata JSONB,
+  is_read BOOLEAN,
+  created_at TIMESTAMPTZ
+)
+```
+
+**User Stories:**
+- As an HR admin, I can view aggregated wellness data for my company
+- As an HR admin, I can see mood trends across departments
+- As an HR admin, I receive AI-powered insights about team wellness
+- As an HR admin, I can identify stress patterns (e.g., Monday mornings)
+- As an HR admin, I can track engagement with wellness programs
+- As an HR admin, I can see which departments need support
+- As an HR admin, I receive alerts for concerning trends
+- As an employee, my individual data remains private
+- As an employee, I can opt-in to corporate wellness program
+
+**Subscription Plans (Corporate):**
+- **Basic Corporate:** Rp 25,000/employee/month (min 50 employees)
+- **Business Corporate:** Rp 40,000/employee/month (min 100 employees)
+- **Enterprise Corporate:** Custom pricing (500+ employees)
+
+**Features by Plan:**
+| Feature | Basic | Business | Enterprise |
+|---------|-------|----------|------------|
+| Dashboard Access | ✅ | ✅ | ✅ |
+| Weekly Reports | ✅ | ✅ | ✅ |
+| AI Insights | Basic | Advanced | Premium |
+| Department Analytics | ✅ | ✅ | ✅ |
+| Real-time Alerts | ❌ | ✅ | ✅ |
+| Custom Reports | ❌ | ❌ | ✅ |
+| Dedicated Support | ❌ | ✅ | ✅ |
+| API Access | ❌ | ❌ | ✅ |
+
+---
+
 ## 4. Technical Requirements
 
 ### 4.1 Technology Stack
@@ -425,6 +561,15 @@ payments (
 - Focus indicators
 - Alt text for images
 
+### 5.4 Corporate Dashboard UX
+- **Clean, Professional Design:** Business-focused aesthetics
+- **Data Visualization:** Charts and graphs for trends
+- **Color-Coded Alerts:** Green (positive), Yellow (warning), Red (critical)
+- **Responsive Layout:** Desktop-optimized with mobile support
+- **Export Capabilities:** Download reports as PDF/CSV
+- **Real-time Updates:** Live data refresh
+- **Privacy Indicators:** Clear labels for anonymized data
+
 ---
 
 ## 6. Success Metrics
@@ -461,21 +606,26 @@ payments (
 - [ ] Habit tracking
 - [ ] Push notifications
 - [ ] Email reminders
+- [✅] Corporate wellness dashboard
 
 ### Phase 3 (Q3 2025)
 - [ ] Mobile native apps (iOS/Android)
 - [ ] Video call integration for sessions
-- [ ] AI-powered insights and recommendations
+- [ ] Advanced AI-powered insights
 - [ ] Gamification (badges, streaks)
 - [ ] Social sharing (optional)
 - [ ] Multi-language support
+- [ ] Corporate wellness API
+- [ ] Integration with HR systems (Workday, BambooHR)
 
 ### Phase 4 (Q4 2025)
-- [ ] Corporate wellness programs
+- [✅] Corporate wellness programs
 - [ ] Insurance integration
 - [ ] Prescription management
 - [ ] Emergency support hotline
 - [ ] Family accounts
+- [ ] White-label solutions for enterprises
+- [ ] Predictive analytics for HR
 
 ---
 
@@ -557,3 +707,4 @@ payments (
 | Version | Date | Changes |
 |---------|------|---------|
 | 1.0 | Jan 2025 | Initial PRD creation |
+| 2.0 | Jan 2025 | Added corporate wellness program, updated vision/mission, expanded target audience, enhanced future roadmap |
